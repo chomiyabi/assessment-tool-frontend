@@ -11,7 +11,7 @@ const API_CONFIG = {
     // 本番環境: Vercel Functions経由でCORS問題を解決
     // ローカル: 直接GAS APIを呼び出し
     BASE_URL: window.location.hostname === 'haru-assessment.com' 
-        ? 'https://assessment-tool-2j14hc8kg-chomiyabis-projects.vercel.app/api/proxy'
+        ? 'https://assessment-tool-3n5zmt0mt-chomiyabis-projects.vercel.app/api/proxy'
         : 'https://script.google.com/macros/s/AKfycbwooCJeciyJfmWZ9BhN8gzsXsp6kYmd70R7_X8ghBj3tFMOKkn4cccG3ai_vjrz_ng1gw/exec',
     
     // タイムアウト設定（ミリ秒）
