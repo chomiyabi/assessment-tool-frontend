@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>利用規約 - DX Web診断</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- ヘッダー -->
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">Assessment Tool</h1>
+        </div>
+    </header>
+    
+    <!-- サブヘッダー -->
+    <section class="sub-header">
+        <div class="container">
+            <h1 class="sub-header-title">DX Web診断</h1>
+        </div>
+    </section>
+    
+    <!-- メインコンテンツ -->
+    <main class="main">
+        <div class="container">
+            <div class="privacy-content">
+                <h2 class="privacy-title">利用規約</h2>
+                
+                <div class="privacy-document">
+                    <h3 class="privacy-section-title">DX簡易Web診断利用規約</h3>
+                    
+                    <div class="privacy-article">
+                        <h4 class="article-title">第1条（利用者の責任と権利）</h4>
+                        <p class="article-content">
+                            Assessment Tool株式会社（以下「当社」といいます）が提供する「DX簡易Web診断」（以下「本サービス」といいます）を利用する者（以下「利用者」といいます）は自己の責任で本サービスを利用するものとし、本規約に違反する行為、本サービスを利用してなされた一切の行為、およびそれらの行為の結果について一切の責任を負うことに同意するものとします。本サービスを利用する機器およびネットワークなどの環境は、利用者の費用と責任で準備するものとします。
+                        </p>
+                    </div>
+                    
+                    <div class="privacy-article">
+                        <h4 class="article-title">第2条（利用料）</h4>
+                        <p class="article-content">
+                            本サービスの利用料は無料です。
+                        </p>
+                    </div>
+                    
+                    <div class="privacy-article">
+                        <h4 class="article-title">第3条（利用者に係る情報の取得と利用）</h4>
+                        
+                        <div class="privacy-subsection">
+                            <h5 class="subsection-title">3.1 個人情報の利用目的</h5>
+                            <p class="article-content">
+                                当社は、本サービスにおいて利用者にご提供いただいた個人情報を、以下の利用目的で利用いたします。なお、別途、利用目的について同意いただいた場合は、その利用目的の範囲内で利用させていただきます。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 同意チェックボックス -->
+                <div class="privacy-agreement">
+                    <div class="form-checkbox">
+                        <input type="checkbox" id="agreePrivacy" name="agreePrivacy">
+                        <label for="agreePrivacy">利用規約に同意する</label>
+                    </div>
+                </div>
+                
+                <!-- ナビゲーションボタン -->
+                <div class="privacy-actions">
+                    <button class="btn btn-primary btn-large" id="nextButton" disabled onclick="proceedToNext()">
+                        次へ
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- フッター -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2020-2022 Assessment Tool. All Rights Reserved.</p>
+        </div>
+    </footer>
+    
+    <!-- JavaScript -->
+    <script src="js/common.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+        // ページ読み込み時の処理
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('P-02: プライバシーポリシーページが読み込まれました');
+            
+            // APIから設定情報を取得（プライバシーポリシー本文）
+            try {
+                LoadingHelper.show('プライバシーポリシーを読み込んでいます...');
+                const config = await API.getConfig();
+                
+                // プライバシーポリシーが取得できた場合は更新
+                if (config.privacy_policy) {
+                    const privacyElement = document.querySelector('.article-content');
+                    if (privacyElement) {
+                        // 最初の条項要素のテキストを更新
+                        privacyElement.textContent = config.privacy_policy;
+                    }
+                }
+                
+                LoadingHelper.hide();
+            } catch (error) {
+                console.error('設定情報の取得に失敗:', error);
+                LoadingHelper.hide();
+                // エラーが発生しても、ページは静的コンテンツで表示を続ける
+            }
+            
+            const agreeCheckbox = document.getElementById('agreePrivacy');
+            const nextButton = document.getElementById('nextButton');
+            
+            // チェックボックスの状態変更時の処理
+            agreeCheckbox.addEventListener('change', function() {
+                console.log('チェックボックス変更:', this.checked);
+                if (this.checked) {
+                    nextButton.disabled = false;
+                    nextButton.classList.remove('btn-disabled');
+                    console.log('ボタン有効化');
+                } else {
+                    nextButton.disabled = true;
+                    nextButton.classList.add('btn-disabled');
+                    console.log('ボタン無効化');
+                }
+            });
+        });
+        
+        // 次へボタンの処理
+        function proceedToNext() {
+            const agreeCheckbox = document.getElementById('agreePrivacy');
+            
+            if (!agreeCheckbox.checked) {
+                alert('利用規約への同意が必要です');
+                return;
+            }
+            
+            console.log('利用規約に同意して次のページへ遷移');
+            
+            // 同意状態をローカルストレージに保存
+            if (typeof Common !== 'undefined') {
+                Common.storage.set('privacyAgreed', {
+                    agreed: true,
+                    timestamp: new Date().toISOString()
+                });
+                // Common.navigation.goToPage('register.html');
+            } else {
+                // フォールバック: 直接localStorageを使用
+                localStorage.setItem('privacyAgreed', JSON.stringify({
+                    agreed: true,
+                    timestamp: new Date().toISOString()
+                }));
+            }
+            
+            // 次のページ（P-03）へ遷移
+            window.location.href = 'register.html';
+        }
+    </script>
+</body>
+</html>

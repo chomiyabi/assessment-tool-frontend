@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>テンプレート - 生成AI活用 業務効率化Web診断</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- ヘッダー -->
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">DX Web診断</h1>
+        </div>
+    </header>
+    
+    <!-- メインコンテンツ -->
+    <main class="main">
+        <div class="container">
+            <h1>共通テンプレート デモページ</h1>
+            
+            <!-- セクション例 -->
+            <section class="section">
+                <h2 class="section-title">UIコンポーネント サンプル</h2>
+                
+                <!-- カード -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">ボタンサンプル</h3>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary">プライマリボタン</button>
+                        <button class="btn btn-secondary">セカンダリボタン</button>
+                        <button class="btn btn-primary btn-large">大きいボタン</button>
+                        <button class="btn btn-primary" disabled>無効なボタン</button>
+                    </div>
+                </div>
+                
+                <!-- フォーム -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">フォームサンプル</h3>
+                    </div>
+                    <form>
+                        <div class="form-row">
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        姓<span class="required">*</span>
+                                    </label>
+                                    <input type="text" class="form-input" placeholder="山田" required>
+                                    <div class="form-error"></div>
+                                </div>
+                            </div>
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        名<span class="required">*</span>
+                                    </label>
+                                    <input type="text" class="form-input" placeholder="太郎" required>
+                                    <div class="form-error"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">
+                                メールアドレス<span class="required">*</span>
+                            </label>
+                            <input type="email" class="form-input" placeholder="example@email.com" required>
+                            <div class="form-error"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">業種</label>
+                            <select class="form-select">
+                                <option value="">選択してください</option>
+                                <option value="it">IT・通信</option>
+                                <option value="manufacturing">製造業</option>
+                                <option value="finance">金融・保険</option>
+                                <option value="retail">小売・流通</option>
+                                <option value="other">その他</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="form-checkbox">
+                                <input type="checkbox" id="agree" name="agree">
+                                <label for="agree">利用規約に同意する</label>
+                            </div>
+                        </div>
+                        
+                        <button type="button" class="btn btn-primary" onclick="testValidation()">
+                            検証テスト
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- プログレスバー -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">プログレスバー</h3>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-text">3 / 10</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 30%;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- アラート -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">アラート</h3>
+                    </div>
+                    <div class="alert alert-info">
+                        情報: これは情報メッセージです
+                    </div>
+                    <div class="alert alert-success">
+                        成功: 処理が正常に完了しました
+                    </div>
+                    <div class="alert alert-error">
+                        エラー: 処理中にエラーが発生しました
+                    </div>
+                </div>
+                
+                <!-- ラジオボタン -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">質問サンプル</h3>
+                    </div>
+                    <div class="form-group">
+                        <p><strong>Q1. 自社の経営戦略に合わせたDX戦略を策定されていますか？</strong></p>
+                        <div class="form-radio">
+                            <input type="radio" id="q1_1" name="q1" value="1">
+                            <label for="q1_1">策定していない。または周知されていない</label>
+                        </div>
+                        <div class="form-radio">
+                            <input type="radio" id="q1_2" name="q1" value="2">
+                            <label for="q1_2">公開、周知されているが、一部の組織しか認知していない</label>
+                        </div>
+                        <div class="form-radio">
+                            <input type="radio" id="q1_3" name="q1" value="3">
+                            <label for="q1_3">全組織に認知されており、一部の組織で取り組みが始めている</label>
+                        </div>
+                        <div class="form-radio">
+                            <input type="radio" id="q1_4" name="q1" value="4">
+                            <label for="q1_4">全社員に認知されており、部門横断で取り組んでいる</label>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <!-- フッター -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Assessment Tool. All Rights Reserved.</p>
+        </div>
+    </footer>
+    
+    <!-- JavaScript -->
+    <script src="js/common.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        // テスト用関数
+        function testValidation() {
+            if (Common.validation.validateForm('form')) {
+                Common.ui.showAlert('バリデーション成功！', 'success');
+            } else {
+                Common.ui.showAlert('入力内容を確認してください', 'error');
+            }
+        }
+        
+        // ローディングテスト
+        function testLoading() {
+            Common.ui.showLoading();
+            setTimeout(() => {
+                Common.ui.hideLoading();
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

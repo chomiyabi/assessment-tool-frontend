@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>お客様情報入力 - DX Web診断</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- ヘッダー -->
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">Assessment Tool</h1>
+        </div>
+    </header>
+    
+    <!-- サブヘッダー -->
+    <section class="sub-header">
+        <div class="container">
+            <h1 class="sub-header-title">DX Web診断</h1>
+        </div>
+    </section>
+    
+    <!-- メインコンテンツ -->
+    <main class="main">
+        <div class="container">
+            <div class="register-content">
+                <h2 class="register-title">お客様情報入力</h2>
+                
+                <form id="registerForm" class="register-form">
+                    <!-- 姓・名 -->
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <span class="required-badge">必須</span>
+                                    姓
+                                </label>
+                                <input type="text" 
+                                       class="form-input" 
+                                       id="lastName" 
+                                       name="lastName" 
+                                       placeholder="姓" 
+                                       required>
+                                <div class="form-error"></div>
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <span class="required-badge">必須</span>
+                                    名
+                                </label>
+                                <input type="text" 
+                                       class="form-input" 
+                                       id="firstName" 
+                                       name="firstName" 
+                                       placeholder="名" 
+                                       required>
+                                <div class="form-error"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- eメール -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span class="required-badge">必須</span>
+                            eメール
+                        </label>
+                        <input type="email" 
+                               class="form-input" 
+                               id="email" 
+                               name="email" 
+                               placeholder="example@email.com" 
+                               required>
+                        <div class="form-error"></div>
+                    </div>
+                    
+                    <!-- 電話番号 -->
+                    <div class="form-group">
+                        <label class="form-label">電話番号</label>
+                        <input type="tel" 
+                               class="form-input" 
+                               id="phone" 
+                               name="phone" 
+                               placeholder="03-1234-5678">
+                        <div class="form-error"></div>
+                    </div>
+                    
+                    <!-- 法人名 -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span class="required-badge">必須</span>
+                            法人名（会社名、学校名、団体名）
+                        </label>
+                        <input type="text" 
+                               class="form-input" 
+                               id="company" 
+                               name="company" 
+                               placeholder="Assessment Tool株式会社" 
+                               required>
+                        <div class="form-error"></div>
+                    </div>
+                    
+                    <!-- 業種 -->
+                    <div class="form-group">
+                        <label class="form-label">業種</label>
+                        <select class="form-select" id="industry" name="industry">
+                            <option value="">選択してください</option>
+                            <option value="it">IT・通信・インターネット</option>
+                            <option value="manufacturing">製造業</option>
+                            <option value="finance">金融・保険</option>
+                            <option value="retail">小売・流通・商社</option>
+                            <option value="service">サービス業</option>
+                            <option value="construction">建設・不動産</option>
+                            <option value="healthcare">医療・介護</option>
+                            <option value="education">教育・研究</option>
+                            <option value="government">官公庁・自治体</option>
+                            <option value="consulting">コンサルティング</option>
+                            <option value="other">その他</option>
+                        </select>
+                        <div class="form-error"></div>
+                    </div>
+                    
+                    <!-- 役職分類 -->
+                    <div class="form-group">
+                        <label class="form-label">役職分類</label>
+                        <select class="form-select" id="position" name="position">
+                            <option value="">選択してください</option>
+                            <option value="executive">経営者・役員</option>
+                            <option value="manager">管理職（部長・課長等）</option>
+                            <option value="supervisor">主任・係長</option>
+                            <option value="staff">一般職</option>
+                            <option value="specialist">専門職</option>
+                            <option value="consultant">コンサルタント</option>
+                            <option value="other">その他</option>
+                        </select>
+                        <div class="form-error"></div>
+                    </div>
+                    
+                    <!-- 送信ボタン -->
+                    <div class="register-actions">
+                        <button type="submit" class="btn btn-primary btn-large">
+                            次へ
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+    
+    <!-- フッター -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2020-2022 Assessment Tool. All Rights Reserved.</p>
+        </div>
+    </footer>
+    
+    <!-- JavaScript -->
+    <script src="js/common.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+        // ページ読み込み時の処理
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('P-03: 個人情報入力ページが読み込まれました');
+            
+            // Commonオブジェクトの存在確認
+            if (typeof Common === 'undefined') {
+                console.error('Common.jsが読み込まれていません');
+                alert('システムエラー: 必要なファイルが読み込めませんでした');
+                return;
+            }
+            
+            // プライバシーポリシー同意確認
+            const privacyAgreed = Common.storage.get('privacyAgreed');
+            if (!privacyAgreed || !privacyAgreed.agreed) {
+                console.warn('プライバシーポリシー未同意');
+                alert('利用規約への同意が必要です。最初からやり直してください。');
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // フォームバリデーション
+            const form = document.getElementById('registerForm');
+            const inputs = form.querySelectorAll('input, select');
+            
+            // リアルタイムバリデーション
+            inputs.forEach(input => {
+                input.addEventListener('blur', function() {
+                    validateField(this);
+                });
+                
+                input.addEventListener('input', function() {
+                    clearFieldError(this);
+                });
+            });
+            
+            // フォーム送信
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                submitRegistration();
+            });
+        });
+        
+        // 個別フィールドのバリデーション
+        function validateField(field) {
+            const fieldGroup = field.closest('.form-group');
+            const errorElement = fieldGroup.querySelector('.form-error');
+            let isValid = true;
+            let errorMessage = '';
+            
+            // 必須項目チェック
+            if (field.hasAttribute('required') && !field.value.trim()) {
+                isValid = false;
+                errorMessage = 'この項目は必須です';
+            }
+            // メールアドレス形式チェック
+            else if (field.type === 'email' && field.value.trim()) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(field.value.trim())) {
+                    isValid = false;
+                    errorMessage = '有効なメールアドレスを入力してください';
+                }
+            }
+            // 電話番号形式チェック（簡易的なチェック）
+            else if (field.type === 'tel' && field.value.trim()) {
+                const phoneRegex = /^[\d\-\(\)\+\s]+$/;
+                if (!phoneRegex.test(field.value.trim())) {
+                    isValid = false;
+                    errorMessage = '有効な電話番号を入力してください';
+                }
+            }
+            
+            // エラー表示の更新
+            if (!isValid) {
+                field.classList.add('error');
+                errorElement.textContent = errorMessage;
+                errorElement.style.display = 'block';
+            } else {
+                field.classList.remove('error');
+                errorElement.textContent = '';
+                errorElement.style.display = 'none';
+            }
+            
+            return isValid;
+        }
+        
+        // フィールドエラーのクリア
+        function clearFieldError(field) {
+            field.classList.remove('error');
+            const fieldGroup = field.closest('.form-group');
+            const errorElement = fieldGroup.querySelector('.form-error');
+            errorElement.textContent = '';
+            errorElement.style.display = 'none';
+        }
+        
+        // 登録情報送信
+        async function submitRegistration() {
+            const form = document.getElementById('registerForm');
+            
+            // 全フィールドのバリデーション
+            let isFormValid = true;
+            const inputs = form.querySelectorAll('input[required], select[required]');
+            
+            inputs.forEach(input => {
+                if (!validateField(input)) {
+                    isFormValid = false;
+                }
+            });
+            
+            if (!isFormValid) {
+                alert('入力内容に誤りがあります。確認してください。');
+                return;
+            }
+            
+            // フォームデータの収集
+            const formData = new FormData(form);
+            const userData = {
+                last_name: formData.get('lastName'),
+                first_name: formData.get('firstName'),
+                email: formData.get('email'),
+                phone: formData.get('phone'),
+                company: formData.get('company'),
+                industry: formData.get('industry'),
+                position: formData.get('position')
+            };
+            
+            console.log('登録データ:', userData);
+            
+            try {
+                // APIでユーザー登録（LoadingHelperとAPIが存在する場合）
+                if (typeof LoadingHelper !== 'undefined') {
+                    LoadingHelper.show('ユーザー情報を登録しています...');
+                }
+                
+                if (typeof API !== 'undefined') {
+                    const result = await API.registerUser(userData);
+                    console.log('登録成功:', result);
+                    
+                    // セッションIDと共にローカルストレージに保存
+                    userData.session_id = result.session_id;
+                    userData.timestamp = new Date().toISOString();
+                } else {
+                    // APIが利用できない場合はダミーセッションIDを生成
+                    userData.session_id = 'sess_' + Date.now() + '_' + Math.random().toString(36).substring(2);
+                    userData.timestamp = new Date().toISOString();
+                    console.warn('API利用不可 - ダミーデータで進行');
+                }
+                
+                // ローカルストレージに保存
+                localStorage.setItem('userData', JSON.stringify(userData));
+                
+                // ローディング終了
+                if (typeof LoadingHelper !== 'undefined') {
+                    LoadingHelper.hide();
+                }
+                
+                // 次のページ（P-04）へ自動遷移（メッセージなし）
+                window.location.href = 'assessment.html';
+                
+            } catch (error) {
+                if (typeof LoadingHelper !== 'undefined') {
+                    LoadingHelper.hide();
+                }
+                console.error('登録エラー:', error);
+                alert('登録に失敗しました: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

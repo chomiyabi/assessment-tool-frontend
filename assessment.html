@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>診断 - DX Web診断</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- ヘッダー -->
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">Assessment Tool</h1>
+        </div>
+    </header>
+    
+    <!-- サブヘッダー -->
+    <section class="sub-header">
+        <div class="container">
+            <h1 class="sub-header-title">DX Web診断</h1>
+        </div>
+    </section>
+    
+    <!-- メインコンテンツ -->
+    <main class="main">
+        <div class="container">
+            <div class="assessment-content">
+                <!-- プログレスバー -->
+                <div class="progress-container">
+                    <div class="progress-text" id="progressText">1 / 5</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 20%;"></div>
+                    </div>
+                </div>
+                
+                <!-- カテゴリタイトル -->
+                <h2 class="assessment-category" id="categoryTitle">経営</h2>
+                
+                <!-- 質問カード -->
+                <div class="question-cards" id="questionCards">
+                    <!-- 質問は動的に生成 -->
+                </div>
+                
+                <!-- ナビゲーションボタン -->
+                <div class="assessment-actions">
+                    <button class="btn btn-secondary" id="prevButton" onclick="previousPage()" disabled>
+                        戻る
+                    </button>
+                    <button class="btn btn-primary" id="nextButton" onclick="nextPage()" disabled>
+                        次へ
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- フッター -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2020-2022 Assessment Tool. All Rights Reserved.</p>
+        </div>
+    </footer>
+    
+    <!-- JavaScript -->
+    <script src="js/common.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+        // 診断状態管理
+        let assessmentState = {
+            currentCategoryIndex: 0,
+            categories: [],
+            categorizedQuestions: {},
+            answers: {}
+        };
+        
+        // 質問データ（APIから取得）
+        let questionsData = [
+            {
+                question_id: 'Q001',
+                category: '経営',
+                question_text: '自社の経営戦略に合わせたDX戦略を策定されていますか？ また、戦略は社内に公開、周知され、組織に認知されていますか？',
+                options: [
+                    { text: '策定していない。または周知されていない', score: 1 },
+                    { text: '公開、周知されているが、一部の組織しか認知していない', score: 2 },
+                    { text: '全組織に認知されており、一部の組織で取り組みが始めている', score: 3 },
+                    { text: '全社員に認知されており、部門横断で取り組んでいる', score: 4 }
+                ]
+            },
+            {
+                question_id: 'Q002',
+                category: '経営',
+                question_text: '将来におけるディスラプションに対する危機感を社内で共有できていますか？',
+                options: [
+                    { text: '危機感がない。または共有できていない', score: 1 },
+                    { text: '漠然として危機感を共有している', score: 2 },
+                    { text: '具体的な危機について役員間で話し合っている', score: 3 },
+                    { text: 'ディスラプションに対する影響を評価した上で、役員・社員と共有している', score: 4 }
+                ]
+            },
+            {
+                question_id: 'Q003',
+                category: '経営',
+                question_text: 'DX推進に対して予算が確保され、ビジネス貢献を評価する仕組みがありますか？',
+                options: [
+                    { text: '予算がない。または不十分で評価の仕組みもない', score: 1 },
+                    { text: '予算化及び仕組みが明確化され、一部の部門で実践されている', score: 2 },
+                    { text: '予算化及び仕組みが明確化され、全社的に実践されている', score: 3 },
+                    { text: '予算化及び仕組みが明確化され、全社的に継続的に改善しながら定着している', score: 4 }
+                ]
+            },
+            {
+                question_id: 'Q004',
+                category: '人事',
+                question_text: 'デジタル人材の採用・育成に取り組んでいますか？',
+                options: [
+                    { text: '取り組んでいない', score: 1 },
+                    { text: '一部で取り組みを開始している', score: 2 },
+                    { text: '計画的に採用・育成を進めている', score: 3 },
+                    { text: '継続的な採用・育成体制が確立されている', score: 4 }
+                ]
+            },
+            {
+                question_id: 'Q005',
+                category: 'マーケティング',
+                question_text: '顧客データを活用したマーケティング施策を実施していますか？',
+                options: [
+                    { text: '実施していない', score: 1 },
+                    { text: '一部のデータを活用している', score: 2 },
+                    { text: '複数のデータソースを統合して活用している', score: 3 },
+                    { text: 'AIを活用した高度な分析・予測を行っている', score: 4 }
+                ]
+            },
+            {
+                question_id: 'Q009',
+                category: 'Others',
+                question_text: 'その他の業務領域においてデジタル技術の活用を進めていますか？',
+                options: [
+                    { text: '全く活用していない', score: 1 },
+                    { text: '一部の業務で活用を検討している', score: 2 },
+                    { text: '複数の業務で活用を開始している', score: 3 },
+                    { text: '全社的に積極的に活用している', score: 4 }
+                ]
+            }
+        ];
+        
+        // ページ読み込み時の処理
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('P-04: 診断ページが読み込まれました');
+            
+            // ユーザーデータ確認
+            const userData = Common.storage.get('userData');
+            if (!userData || !userData.session_id) {
+                Common.ui.showAlert('ユーザー情報が見つかりません。最初からやり直してください。', 'error');
+                setTimeout(() => {
+                    Common.navigation.goToPage('index.html');
+                }, 3000);
+                return;
+            }
+            
+            // APIから質問データを取得
+            try {
+                LoadingHelper.show('質問データを読み込んでいます...');
+                const result = await API.getQuestions();
+                
+                if (result.questions && result.questions.length > 0) {
+                    questionsData = result.questions;
+                    console.log('質問データ取得成功:', questionsData.length + '問');
+                }
+                
+                LoadingHelper.hide();
+                initializeAssessment();
+                
+            } catch (error) {
+                LoadingHelper.hide();
+                console.error('質問データ取得エラー:', error);
+                
+                // APIエラー時はサンプルデータを使用
+                console.log('サンプルデータを使用します');
+                initializeAssessment();
+            }
+        });
+        
+        // 診断初期化
+        function initializeAssessment() {
+            // カテゴリ別に質問をグループ化
+            const categoryMap = {};
+            questionsData.forEach(question => {
+                const category = question.category;
+                if (!categoryMap[category]) {
+                    categoryMap[category] = [];
+                }
+                categoryMap[category].push(question);
+            });
+            
+            // カテゴリ順序を動的に設定（優先順序を定義、その他は自動追加）
+            const preferredOrder = ['経営', '人事', 'マーケティング'];
+            const allCategories = Object.keys(categoryMap);
+            
+            // 優先順序のカテゴリを先に追加
+            const orderedCategories = [];
+            preferredOrder.forEach(cat => {
+                if (categoryMap[cat]) {
+                    orderedCategories.push(cat);
+                }
+            });
+            
+            // 優先順序にない新しいカテゴリを追加
+            allCategories.forEach(cat => {
+                if (!preferredOrder.includes(cat) && categoryMap[cat]) {
+                    orderedCategories.push(cat);
+                }
+            });
+            
+            assessmentState.categories = orderedCategories;
+            assessmentState.categorizedQuestions = categoryMap;
+            
+            console.log('検出されたカテゴリ:', assessmentState.categories);
+            
+            // 回答データ初期化
+            questionsData.forEach(q => {
+                assessmentState.answers[q.question_id] = null;
+            });
+            
+            displayCurrentCategory();
+        }
+        
+        // 現在のカテゴリを表示
+        function displayCurrentCategory() {
+            const currentCategory = assessmentState.categories[assessmentState.currentCategoryIndex];
+            const currentQuestions = assessmentState.categorizedQuestions[currentCategory] || [];
+            
+            // プログレス更新
+            updateProgress();
+            
+            // カテゴリ表示
+            document.getElementById('categoryTitle').textContent = currentCategory;
+            
+            // 質問カード生成
+            const cardsContainer = document.getElementById('questionCards');
+            cardsContainer.innerHTML = '';
+            
+            currentQuestions.forEach((question, index) => {
+                const questionCard = createQuestionCard(question, index);
+                cardsContainer.appendChild(questionCard);
+            });
+            
+            // ボタン状態更新
+            updateNavigationButtons();
+            
+            // ページトップにスムーズスクロール
+            scrollToTop();
+        }
+        
+        // 質問カード生成
+        function createQuestionCard(question, localIndex) {
+            const card = document.createElement('div');
+            card.className = 'question-card';
+            
+            // 質問番号を全体通しで計算
+            const questionNumber = getGlobalQuestionNumber(question.question_id);
+            const currentAnswer = assessmentState.answers[question.question_id];
+            
+            let optionsHtml = '';
+            question.options.forEach((option, optionIndex) => {
+                const isChecked = currentAnswer === optionIndex ? 'checked' : '';
+                optionsHtml += `
+                    <div class="question-option">
+                        <input type="radio" 
+                               id="${question.question_id}_${optionIndex}" 
+                               name="${question.question_id}" 
+                               value="${optionIndex}"
+                               ${isChecked}
+                               onchange="saveAnswer('${question.question_id}', ${optionIndex}, ${option.score})">
+                        <label for="${question.question_id}_${optionIndex}">
+                            ${option.text}
+                        </label>
+                    </div>
+                `;
+            });
+            
+            card.innerHTML = `
+                <div class="question-header">
+                    <div class="question-category">【${question.category}】</div>
+                    <h3 class="question-title">Q${questionNumber}. ${question.question_text}</h3>
+                </div>
+                <div class="question-options">
+                    ${optionsHtml}
+                </div>
+            `;
+            
+            return card;
+        }
+        
+        // 質問IDから全体通しの質問番号を取得
+        function getGlobalQuestionNumber(questionId) {
+            const allQuestions = questionsData;
+            for (let i = 0; i < allQuestions.length; i++) {
+                if (allQuestions[i].question_id === questionId) {
+                    return i + 1;
+                }
+            }
+            return 1;
+        }
+        
+        // 回答保存
+        function saveAnswer(questionId, optionIndex, score) {
+            assessmentState.answers[questionId] = optionIndex;
+            
+            // 現在のカテゴリの全質問に回答済みかチェック
+            const currentCategory = assessmentState.categories[assessmentState.currentCategoryIndex];
+            const currentQuestions = assessmentState.categorizedQuestions[currentCategory] || [];
+            
+            const allAnswered = currentQuestions.every(q => 
+                assessmentState.answers[q.question_id] !== null
+            );
+            
+            // 次へボタンの有効/無効切り替え
+            document.getElementById('nextButton').disabled = !allAnswered;
+            
+            console.log('回答保存:', questionId, optionIndex, score);
+        }
+        
+        // プログレス更新
+        function updateProgress() {
+            const progressText = document.getElementById('progressText');
+            const progressFill = document.getElementById('progressFill');
+            
+            const currentDisplayCategory = assessmentState.currentCategoryIndex + 1;
+            const totalCategories = assessmentState.categories.length;
+            progressText.textContent = `${currentDisplayCategory} / ${totalCategories}`;
+            
+            const progressPercent = (currentDisplayCategory / totalCategories) * 100;
+            progressFill.style.width = `${progressPercent}%`;
+        }
+        
+        // ナビゲーションボタン更新
+        function updateNavigationButtons() {
+            const prevButton = document.getElementById('prevButton');
+            const nextButton = document.getElementById('nextButton');
+            
+            // 戻るボタン
+            prevButton.disabled = assessmentState.currentCategoryIndex === 0;
+            
+            // 次へボタン - 現在のカテゴリの全質問に回答済みかチェック
+            const currentCategory = assessmentState.categories[assessmentState.currentCategoryIndex];
+            const currentQuestions = assessmentState.categorizedQuestions[currentCategory] || [];
+            
+            const allAnswered = currentQuestions.every(q => 
+                assessmentState.answers[q.question_id] !== null
+            );
+            
+            nextButton.disabled = !allAnswered;
+            
+            // 最終カテゴリの場合は「結果を見る」
+            if (assessmentState.currentCategoryIndex === assessmentState.categories.length - 1) {
+                nextButton.textContent = '結果を見る';
+            } else {
+                nextButton.textContent = '次へ';
+            }
+        }
+        
+        // 前のカテゴリ
+        function previousPage() {
+            if (assessmentState.currentCategoryIndex > 0) {
+                assessmentState.currentCategoryIndex--;
+                displayCurrentCategory();
+            }
+        }
+        
+        // 次のカテゴリ
+        function nextPage() {
+            if (assessmentState.currentCategoryIndex < assessmentState.categories.length - 1) {
+                assessmentState.currentCategoryIndex++;
+                displayCurrentCategory();
+            } else {
+                // 診断完了
+                completeAssessment();
+            }
+        }
+        
+        // 診断完了
+        async function completeAssessment() {
+            console.log('診断完了:', assessmentState.answers);
+            
+            const userData = Common.storage.get('userData');
+            
+            try {
+                // APIに回答を送信
+                LoadingHelper.show('診断結果を保存しています...');
+                
+                const result = await API.saveAnswers(
+                    userData.session_id,
+                    assessmentState.answers
+                );
+                
+                console.log('回答保存成功:', result);
+                
+                // 回答と結果をローカルストレージに保存
+                Common.storage.set('assessmentAnswers', assessmentState.answers);
+                Common.storage.set('assessmentResult', {
+                    total_score: result.total_score,
+                    maturity_level: result.maturity_level,
+                    answered_questions: result.answered_questions
+                });
+                
+                LoadingHelper.hide();
+                
+                // 成功メッセージ
+                Common.ui.showAlert('診断が完了しました', 'success');
+                
+                // 結果ページ（P-05）へ遷移
+                setTimeout(() => {
+                    Common.navigation.goToPage('result.html');
+                }, 1500);
+                
+            } catch (error) {
+                LoadingHelper.hide();
+                console.error('回答保存エラー:', error);
+                
+                // エラーでもローカルに保存して進む
+                Common.storage.set('assessmentAnswers', assessmentState.answers);
+                Common.ui.showAlert('オフラインで診断を完了しました', 'info');
+                
+                setTimeout(() => {
+                    Common.navigation.goToPage('result.html');
+                }, 2000);
+            }
+        }
+        
+        // ページトップへのスムーズスクロール
+        function scrollToTop() {
+            // カテゴリタイトルの位置までスクロール（少し上の余裕をもって）
+            const categoryTitle = document.getElementById('categoryTitle');
+            if (categoryTitle) {
+                // カテゴリタイトルより少し上にスクロールして、ヘッダーの影響を考慮
+                const titleRect = categoryTitle.getBoundingClientRect();
+                const scrollTarget = window.scrollY + titleRect.top - 80; // 80px上の余裕
+                
+                window.scrollTo({ 
+                    top: Math.max(0, scrollTarget), // 0より小さくならないように
+                    behavior: 'smooth' 
+                });
+            } else {
+                // フォールバック: ページトップにスクロール
+                window.scrollTo({ 
+                    top: 0, 
+                    behavior: 'smooth' 
+                });
+            }
+        }
+    </script>
+</body>
+</html>

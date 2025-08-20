@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API接続テスト - Assessment Tool</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- ヘッダー -->
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">Assessment Tool - API Test</h1>
+        </div>
+    </header>
+    
+    <!-- メインコンテンツ -->
+    <main class="main">
+        <div class="container">
+            <h1>API接続テスト</h1>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">API設定</h2>
+                </div>
+                <div class="card-body">
+                    <p><strong>エンドポイント:</strong></p>
+                    <code id="apiUrl" style="background: #f5f5f5; padding: 10px; display: block; margin: 10px 0; word-break: break-all;">
+                        Loading...
+                    </code>
+                    <p><strong>ステータス:</strong> <span id="apiStatus">未接続</span></p>
+                </div>
+            </div>
+            
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h2 class="card-title">テスト機能</h2>
+                </div>
+                <div class="card-body">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                        <button class="btn btn-primary" onclick="testHealthCheck()">
+                            1. ヘルスチェック
+                        </button>
+                        <button class="btn btn-primary" onclick="testGetConfig()">
+                            2. 設定取得
+                        </button>
+                        <button class="btn btn-primary" onclick="testGetQuestions()">
+                            3. 質問取得
+                        </button>
+                        <button class="btn btn-primary" onclick="testRegisterUser()">
+                            4. ユーザー登録
+                        </button>
+                        <button class="btn btn-primary" onclick="testSaveAnswers()">
+                            5. 回答保存
+                        </button>
+                        <button class="btn btn-primary" onclick="testGetResult()">
+                            6. 結果取得
+                        </button>
+                        <button class="btn btn-secondary" onclick="runAllTests()">
+                            全テスト実行
+                        </button>
+                        <button class="btn btn-secondary" onclick="clearResults()">
+                            結果クリア
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h2 class="card-title">テスト結果</h2>
+                </div>
+                <div class="card-body">
+                    <pre id="testResults" style="background: #f5f5f5; padding: 15px; min-height: 200px; overflow: auto; font-family: 'Courier New', monospace; font-size: 12px;">
+テストを実行してください...
+                    </pre>
+                </div>
+            </div>
+            
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h2 class="card-title">テストデータ</h2>
+                </div>
+                <div class="card-body">
+                    <p><strong>セッションID:</strong> <span id="sessionId">未生成</span></p>
+                    <button class="btn btn-secondary" onclick="generateTestSession()">
+                        新しいセッションを生成
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- フッター -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2020-2022 Assessment Tool. All Rights Reserved.</p>
+        </div>
+    </footer>
+    
+    <!-- JavaScript -->
+    <script src="js/common.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+        let testSessionId = null;
+        let testResults = [];
+        
+        // ページ読み込み時
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('apiUrl').textContent = API_CONFIG.BASE_URL;
+            updateStatus('準備完了', 'success');
+        });
+        
+        function updateStatus(message, type = 'info') {
+            const statusEl = document.getElementById('apiStatus');
+            statusEl.textContent = message;
+            statusEl.style.color = type === 'success' ? '#27AE60' : 
+                                   type === 'error' ? '#E74C3C' : '#333';
+        }
+        
+        function addResult(test, success, data) {
+            const timestamp = new Date().toLocaleTimeString();
+            const result = {
+                time: timestamp,
+                test: test,
+                success: success,
+                data: data
+            };
+            testResults.push(result);
+            
+            const resultsEl = document.getElementById('testResults');
+            resultsEl.textContent = testResults.map(r => 
+                `[${r.time}] ${r.success ? '✅' : '❌'} ${r.test}\n${JSON.stringify(r.data, null, 2)}\n`
+            ).join('\n---\n');
+        }
+        
+        function clearResults() {
+            testResults = [];
+            document.getElementById('testResults').textContent = 'テスト結果をクリアしました';
+        }
+        
+        // テスト関数
+        async function testHealthCheck() {
+            try {
+                updateStatus('ヘルスチェック中...', 'info');
+                const result = await API.healthCheck();
+                addResult('ヘルスチェック', true, result);
+                updateStatus('接続成功', 'success');
+            } catch (error) {
+                addResult('ヘルスチェック', false, { error: error.message });
+                updateStatus('接続失敗', 'error');
+            }
+        }
+        
+        async function testGetConfig() {
+            try {
+                updateStatus('設定取得中...', 'info');
+                const result = await API.getConfig();
+                addResult('設定取得', true, result);
+                updateStatus('取得成功', 'success');
+            } catch (error) {
+                addResult('設定取得', false, { error: error.message });
+                updateStatus('取得失敗', 'error');
+            }
+        }
+        
+        async function testGetQuestions() {
+            try {
+                updateStatus('質問取得中...', 'info');
+                const result = await API.getQuestions();
+                addResult('質問取得', true, {
+                    total_questions: result.questions ? result.questions.length : 0,
+                    sample: result.questions ? result.questions[0] : null
+                });
+                updateStatus('取得成功', 'success');
+            } catch (error) {
+                addResult('質問取得', false, { error: error.message });
+                updateStatus('取得失敗', 'error');
+            }
+        }
+        
+        async function testRegisterUser() {
+            try {
+                updateStatus('ユーザー登録中...', 'info');
+                const testUser = {
+                    last_name: 'テスト',
+                    first_name: '太郎',
+                    email: `test${Date.now()}@example.com`,
+                    phone: '090-1234-5678',
+                    company: 'テスト株式会社',
+                    industry: 'IT',
+                    position: '管理職'
+                };
+                
+                const result = await API.registerUser(testUser);
+                testSessionId = result.session_id;
+                document.getElementById('sessionId').textContent = testSessionId;
+                
+                addResult('ユーザー登録', true, result);
+                updateStatus('登録成功', 'success');
+            } catch (error) {
+                addResult('ユーザー登録', false, { error: error.message });
+                updateStatus('登録失敗', 'error');
+            }
+        }
+        
+        async function testSaveAnswers() {
+            if (!testSessionId) {
+                alert('先にユーザー登録を実行してください');
+                return;
+            }
+            
+            try {
+                updateStatus('回答保存中...', 'info');
+                const testAnswers = {
+                    'Q001': 2,
+                    'Q002': 3,
+                    'Q003': 1,
+                    'Q004': 2,
+                    'Q005': 3
+                };
+                
+                const result = await API.saveAnswers(testSessionId, testAnswers);
+                addResult('回答保存', true, result);
+                updateStatus('保存成功', 'success');
+            } catch (error) {
+                addResult('回答保存', false, { error: error.message });
+                updateStatus('保存失敗', 'error');
+            }
+        }
+        
+        async function testGetResult() {
+            if (!testSessionId) {
+                alert('先にユーザー登録と回答保存を実行してください');
+                return;
+            }
+            
+            try {
+                updateStatus('結果取得中...', 'info');
+                const result = await API.getResult(testSessionId);
+                addResult('結果取得', true, result);
+                updateStatus('取得成功', 'success');
+            } catch (error) {
+                addResult('結果取得', false, { error: error.message });
+                updateStatus('取得失敗', 'error');
+            }
+        }
+        
+        async function runAllTests() {
+            clearResults();
+            updateStatus('全テスト実行中...', 'info');
+            
+            await testHealthCheck();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            await testGetConfig();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            await testGetQuestions();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            await testRegisterUser();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            if (testSessionId) {
+                await testSaveAnswers();
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                await testGetResult();
+            }
+            
+            updateStatus('全テスト完了', 'success');
+        }
+        
+        function generateTestSession() {
+            testSessionId = 'test_' + Date.now() + '_' + Math.random().toString(36).substring(2);
+            document.getElementById('sessionId').textContent = testSessionId;
+            addResult('セッション生成', true, { session_id: testSessionId });
+        }
+    </script>
+</body>
+</html>

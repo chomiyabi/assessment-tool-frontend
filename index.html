@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DX Web診断 - 生成AI活用 業務効率化Web診断</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- CSS読み込み確認用 -->
+    <style>
+        /* CSS読み込み失敗時のフォールバック */
+        body { font-family: Arial, sans-serif; }
+        .header { background-color: #1B2951; color: white; padding: 1rem 0; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .hero-section { padding: 80px 0; text-align: center; }
+        .hero-title { font-size: 48px; margin-bottom: 20px; color: #1B2951; }
+        .btn { background: #4A90E2; color: white; border: none; padding: 12px 24px; border-radius: 4px; cursor: pointer; }
+        .btn:hover { background: #357ABD; }
+        .footer { background: #f5f5f5; padding: 20px 0; text-align: center; margin-top: 40px; }
+    </style>
+</head>
+<body>
+    <!-- ヘッダー -->
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">Assessment Tool</h1>
+        </div>
+    </header>
+    
+    <!-- メインコンテンツ -->
+    <main class="main">
+        <!-- ヒーローセクション -->
+        <section class="hero-section">
+            <div class="container">
+                <div class="hero-content">
+                    <h1 class="hero-title">DX Web診断</h1>
+                    <p class="hero-subtitle">本Web診断は会社のDXの推進度を、25問のアンケートを通じて行う簡易的なDX診断です。</p>
+                    
+                    <div class="hero-description">
+                        <p>Assessment Toolでは、企業のDX推進に向けた現状や課題を認識するためのDX診断サービスを提供しています。DX診断サービスは、IPAが定める「DX推進指標」に技術指標をプラスしたAssessment Tool独自の指標に基づき診断します。</p>
+                        <p class="mt-2">本Web診断では、上記DX診断サービスの簡易版を体験して頂くことができます。</p>
+                    </div>
+                    
+                    <div class="hero-action">
+                        <button class="btn btn-primary btn-large" onclick="startAssessment()">
+                            次へ
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- フッター -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2020-2022 Assessment Tool. All Rights Reserved.</p>
+        </div>
+    </footer>
+    
+    <!-- JavaScript -->
+    <script src="js/common.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        // 診断開始ボタンの処理
+        function startAssessment() {
+            console.log('診断開始ボタンがクリックされました');
+            
+            // Commonオブジェクトが存在する場合は使用、そうでない場合は直接遷移
+            if (typeof Common !== 'undefined') {
+                Common.navigation.goToPage('privacy.html');
+            } else {
+                console.warn('Common.jsが読み込まれていません - 直接遷移します');
+                window.location.href = 'privacy.html';
+            }
+        }
+        
+        // ページ読み込み時の処理
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('P-01: 概要説明ページが読み込まれました');
+        });
+    </script>
+</body>
+</html>

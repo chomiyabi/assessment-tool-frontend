@@ -1,0 +1,342 @@
+/**
+ * Assessment Tool API クライアント - CORS修正版
+ * Google Apps Script の CORS制限を回避するため、GETリクエストベースに変更
+ * 
+ * @version 4.1.0
+ * @description Google Apps Script APIとの通信を管理（CORS対応）
+ */
+
+// API設定
+const API_CONFIG = {
+    // GAS WebアプリケーションURL（デプロイ済み）
+    BASE_URL: 'https://script.google.com/macros/s/AKfycbwooCJeciyJfmWZ9BhN8gzsXsp6kYmd70R7_X8ghBj3tFMOKkn4cccG3ai_vjrz_ng1gw/exec',
+    
+    // タイムアウト設定（ミリ秒）
+    TIMEOUT: 30000,
+    
+    // リトライ設定
+    RETRY_COUNT: 3,
+    RETRY_DELAY: 1000
+};
+
+/**
+ * Assessment Tool API クライアントクラス
+ */
+class AssessmentAPI {
+    constructor() {
+        this.baseUrl = API_CONFIG.BASE_URL;
+        this.timeout = API_CONFIG.TIMEOUT;
+        this.retryCount = API_CONFIG.RETRY_COUNT;
+        this.retryDelay = API_CONFIG.RETRY_DELAY;
+    }
+    
+    /**
+     * HTTPリクエストを実行（GETのみ、CORS回避）
+     * @private
+     */
+    async makeRequest(path, params = {}) {
+        // URLパラメータを構築
+        const urlParams = new URLSearchParams();
+        urlParams.append('path', path);
+        
+        // パラメータを追加
+        Object.keys(params).forEach(key => {
+            if (params[key] !== null && params[key] !== undefined) {
+                urlParams.append(key, typeof params[key] === 'object' ? JSON.stringify(params[key]) : params[key]);
+            }
+        });
+        
+        const url = `${this.baseUrl}?${urlParams.toString()}`;
+        
+        // リトライ機能付きリクエスト
+        let lastError;
+        for (let i = 0; i < this.retryCount; i++) {
+            try {
+                const response = await this.fetchWithTimeout(url, { method: 'GET' });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                // APIエラーのチェック
+                if (result.status === 'error') {
+                    throw new Error(result.error || 'Unknown API error');
+                }
+                
+                return result;
+                
+            } catch (error) {
+                console.error(`Request attempt ${i + 1} failed:`, error);
+                lastError = error;
+                
+                // リトライ前に待機
+                if (i < this.retryCount - 1) {
+                    await this.sleep(this.retryDelay);
+                }
+            }
+        }
+        
+        throw lastError;
+    }
+    
+    /**
+     * タイムアウト付きfetch
+     * @private
+     */
+    async fetchWithTimeout(url, options) {
+        const controller = new AbortController();
+        const id = setTimeout(() => controller.abort(), this.timeout);
+        
+        try {
+            const response = await fetch(url, {
+                ...options,
+                signal: controller.signal
+            });
+            clearTimeout(id);
+            return response;
+        } catch (error) {
+            clearTimeout(id);
+            if (error.name === 'AbortError') {
+                throw new Error('Request timeout');
+            }
+            throw error;
+        }
+    }
+    
+    /**
+     * スリープ関数
+     * @private
+     */
+    sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+    
+    // === パブリックAPIメソッド ===
+    
+    /**
+     * ヘルスチェック
+     */
+    async healthCheck() {
+        try {
+            const result = await this.makeRequest('health');
+            return result;
+        } catch (error) {
+            console.error('Health check failed:', error);
+            throw new Error('APIとの接続に失敗しました');
+        }
+    }
+    
+    /**
+     * サイト設定取得
+     */
+    async getConfig() {
+        try {
+            const result = await this.makeRequest('config');
+            return result.data;
+        } catch (error) {
+            console.error('Failed to get config:', error);
+            throw new Error('設定情報の取得に失敗しました');
+        }
+    }
+    
+    /**
+     * 設問データ取得
+     */
+    async getQuestions() {
+        try {
+            const result = await this.makeRequest('questions');
+            return result.data;
+        } catch (error) {
+            console.error('Failed to get questions:', error);
+            throw new Error('設問データの取得に失敗しました');
+        }
+    }
+    
+    /**
+     * ユーザー登録（GETパラメータで送信）
+     */
+    async registerUser(userData) {
+        try {
+            // バリデーション
+            const required = ['last_name', 'first_name', 'email', 'company'];
+            for (const field of required) {
+                if (!userData[field]) {
+                    throw new Error(`必須項目が入力されていません: ${field}`);
+                }
+            }
+            
+            // GETパラメータで送信（CORS回避）
+            const result = await this.makeRequest('register', {
+                action: 'register',
+                last_name: userData.last_name,
+                first_name: userData.first_name,
+                email: userData.email,
+                phone: userData.phone || '',
+                company: userData.company,
+                industry: userData.industry || '',
+                position: userData.position || ''
+            });
+            
+            return result.data;
+        } catch (error) {
+            console.error('Failed to register user:', error);
+            throw new Error('ユーザー登録に失敗しました: ' + error.message);
+        }
+    }
+    
+    /**
+     * 回答データ保存（GETパラメータで送信）
+     */
+    async saveAnswers(sessionId, answers) {
+        try {
+            if (!sessionId) {
+                throw new Error('セッションIDが必要です');
+            }
+            
+            if (!answers || Object.keys(answers).length === 0) {
+                throw new Error('回答データが必要です');
+            }
+            
+            // 回答データをJSON文字列化
+            const result = await this.makeRequest('answers', {
+                action: 'save_answers',
+                session_id: sessionId,
+                answers: JSON.stringify(answers)
+            });
+            
+            return result.data;
+        } catch (error) {
+            console.error('Failed to save answers:', error);
+            throw new Error('回答の保存に失敗しました: ' + error.message);
+        }
+    }
+    
+    /**
+     * 診断結果取得
+     */
+    async getResult(sessionId) {
+        try {
+            if (!sessionId) {
+                throw new Error('セッションIDが必要です');
+            }
+            
+            const result = await this.makeRequest('result', {
+                session_id: sessionId
+            });
+            
+            return result.data;
+        } catch (error) {
+            console.error('Failed to get result:', error);
+            throw new Error('診断結果の取得に失敗しました: ' + error.message);
+        }
+    }
+    
+    /**
+     * テスト実行
+     */
+    async runTest(testType = 'connection') {
+        try {
+            const result = await this.makeRequest('test', {
+                test_type: testType
+            });
+            return result;
+        } catch (error) {
+            console.error('Test failed:', error);
+            throw new Error('テストの実行に失敗しました');
+        }
+    }
+}
+
+// APIインスタンスを作成してエクスポート
+const API = new AssessmentAPI();
+
+// グローバルに公開（ブラウザ環境）
+if (typeof window !== 'undefined') {
+    window.AssessmentAPI = API;
+}
+
+// モジュールエクスポート（Node.js環境）
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = API;
+}
+
+/**
+ * API接続テスト関数
+ * コンソールから実行可能
+ */
+async function testAPIConnection() {
+    console.log('=== API接続テスト開始 ===');
+    
+    try {
+        // 1. ヘルスチェック
+        console.log('1. ヘルスチェック...');
+        const health = await API.healthCheck();
+        console.log('✅ ヘルスチェック成功:', health);
+        
+        // 2. 設定取得
+        console.log('\n2. 設定取得...');
+        const config = await API.getConfig();
+        console.log('✅ 設定取得成功:', config);
+        
+        // 3. 質問取得
+        console.log('\n3. 質問データ取得...');
+        const questions = await API.getQuestions();
+        console.log('✅ 質問取得成功: 質問数 =', questions.questions ? questions.questions.length : 0);
+        
+        console.log('\n=== すべてのテストが成功しました ===');
+        return true;
+        
+    } catch (error) {
+        console.error('❌ テスト失敗:', error);
+        return false;
+    }
+}
+
+/**
+ * ローディング表示ヘルパー
+ */
+class LoadingHelper {
+    static show(message = 'Loading...') {
+        // 既存のローディングを削除
+        this.hide();
+        
+        // ローディング要素を作成
+        const loading = document.createElement('div');
+        loading.id = 'api-loading';
+        loading.className = 'loading-overlay';
+        loading.innerHTML = `
+            <div class="loading-content">
+                <div class="loading"></div>
+                <p class="loading-message">${message}</p>
+            </div>
+        `;
+        
+        document.body.appendChild(loading);
+    }
+    
+    static hide() {
+        const loading = document.getElementById('api-loading');
+        if (loading) {
+            loading.remove();
+        }
+    }
+    
+    static async withLoading(asyncFunction, message = 'Processing...') {
+        try {
+            this.show(message);
+            const result = await asyncFunction();
+            this.hide();
+            return result;
+        } catch (error) {
+            this.hide();
+            throw error;
+        }
+    }
+}
+
+// LoadingHelperをグローバルに公開
+if (typeof window !== 'undefined') {
+    window.LoadingHelper = LoadingHelper;
+}

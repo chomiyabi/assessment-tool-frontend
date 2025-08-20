@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>診断結果 - DX Web診断</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- ヘッダー -->
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">Assessment Tool</h1>
+        </div>
+    </header>
+    
+    <!-- サブヘッダー -->
+    <section class="sub-header">
+        <div class="container">
+            <h1 class="sub-header-title">DX Web診断結果</h1>
+        </div>
+    </section>
+    
+    <!-- メインコンテンツ -->
+    <main class="main">
+        <div class="container">
+            <div class="result-content">
+                
+                <!-- 診断完了メッセージ -->
+                <div class="result-summary">
+                    <h2 class="result-title">診断が完了しました</h2>
+                    <p class="result-description">
+                        貴社の現在のDX活用度について、各領域における現状と今後の取り組みの方向性をご確認いただけます。
+                        今後のDX推進の参考として、是非ご活用ください。
+                    </p>
+                </div>
+                
+                <!-- DX活用度レーダーチャート -->
+                <div class="result-chart-section">
+                    <h3 class="chart-title">DX活用度の診断結果</h3>
+                    <div class="chart-container">
+                        <div class="chart-wrapper">
+                            <canvas id="radarChart" width="400" height="400"></canvas>
+                        </div>
+                        <div class="chart-legend">
+                            <div class="legend-item">
+                                <span class="legend-color" style="background: #4A90E2;"></span>
+                                <span class="legend-text">現在のスコア</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- スコア詳細 -->
+                <div class="score-details">
+                    <h3 class="score-title">各領域のスコア</h3>
+                    <div class="score-cards" id="scoreCards">
+                        <!-- スコアカードは動的に生成 -->
+                    </div>
+                </div>
+                
+                <!-- 企業家での建設による分析 -->
+                <div class="analysis-section">
+                    <h3 class="analysis-title">企業家での建設による分析</h3>
+                    <div class="analysis-content">
+                        <div class="analysis-text">
+                            <h4 class="framework-title">Assessment Tool診断フレームワーク - 9つについて</h4>
+                            <p class="framework-description">
+                                企業のDX推進を多面的な視点から評価する診断フレームワーク。
+                                DX戦略・組織・人材開発等を通じて貴社のDXReadinessを
+                                フレームワークをベースとし、総合的なDXReadinessを数値化し可視化することで
+                                今後のDX推進方向性を明確にします。
+                            </p>
+                            <ul class="framework-features">
+                                <li>Customer Experience</li>
+                                <li>Employee Experience</li>
+                                <li>データマネジメント</li>
+                                <li>Management Excellence</li>
+                                <li>Digital Innovation</li>
+                            </ul>
+                        </div>
+                        <div class="analysis-diagram">
+                            <div class="dx-framework-diagram">
+                                <div class="center-circle">
+                                    <span>DX</span>
+                                </div>
+                                <div class="framework-items">
+                                    <div class="framework-item cx">CX</div>
+                                    <div class="framework-item ex">EX</div>
+                                    <div class="framework-item mx">MX</div>
+                                    <div class="framework-item dx-inner">DX</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 総合スコア -->
+                <div class="total-score-section">
+                    <h3 class="total-score-title">DXに基づくスコア</h3>
+                    <div class="total-score-display">
+                        <div class="score-circle">
+                            <span class="score-number" id="totalScore">75</span>
+                            <span class="score-label">/ 100</span>
+                        </div>
+                        <div class="score-description">
+                            <h4>Purpose Driven Business DX</h4>
+                            <p>貴社のDX成熟度を多角的に評価した結果です。今後のDX推進の参考としてご活用ください。</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- おすすめのオファリング -->
+                <div class="offerings-section">
+                    <h3 class="offerings-title">貴社におすすめのAssessment Toolのオファリング</h3>
+                    <div class="offerings-grid">
+                        <div class="offering-card">
+                            <h4 class="offering-title">エンタープライズサーチ</h4>
+                            <div class="offering-content">
+                                <p class="offering-description">
+                                    企業内の多様なデータソースから、知りたい情報を簡単に検索できる
+                                    統合検索ソリューションです。AI技術により、より精度の高い検索結果を提供します。
+                                </p>
+                                <ul class="offering-features">
+                                    <li>AI・自然言語処理による高精度検索</li>
+                                    <li>多様なデータソースへの接続対応</li>
+                                    <li>セキュアな検索環境の提供</li>
+                                    <li>PC・モバイル両対応のUI提供</li>
+                                </ul>
+                                <button class="btn btn-primary offering-btn">詳しく見る</button>
+                            </div>
+                        </div>
+                        
+                        <div class="offering-card">
+                            <h4 class="offering-title">デジタルアシスタント</h4>
+                            <div class="offering-content">
+                                <p class="offering-description">
+                                    生成AIの力でビジネスプロセスを効率化。チャットボットや
+                                    自動応答システムにより、顧客対応や社内問い合わせを自動化します。
+                                </p>
+                                <ul class="offering-features">
+                                    <li>生成AI活用による自動応答</li>
+                                    <li>既存システムとの連携</li>
+                                    <li>多言語対応</li>
+                                    <li>学習機能による精度向上</li>
+                                </ul>
+                                <button class="btn btn-primary offering-btn">詳しく見る</button>
+                            </div>
+                        </div>
+                        
+                        <div class="offering-card">
+                            <h4 class="offering-title">データアナリティクス</h4>
+                            <div class="offering-content">
+                                <p class="offering-description">
+                                    蓄積されたデータから価値を創出し、ビジネスの意思決定を支援する
+                                    包括的なデータ分析ソリューションです。
+                                </p>
+                                <ul class="offering-features">
+                                    <li>リアルタイム分析・可視化</li>
+                                    <li>機械学習による予測分析</li>
+                                    <li>カスタムダッシュボード作成</li>
+                                    <li>データガバナンス対応</li>
+                                </ul>
+                                <button class="btn btn-primary offering-btn">詳しく見る</button>
+                            </div>
+                        </div>
+                        
+                        <div class="offering-card">
+                            <h4 class="offering-title">プロセスマイニング</h4>
+                            <div class="offering-content">
+                                <p class="offering-description">
+                                    業務プロセスを可視化・分析し、効率化の機会を特定します。
+                                    データドリブンなプロセス改善を実現します。
+                                </p>
+                                <ul class="offering-features">
+                                    <li>業務プロセスの自動可視化</li>
+                                    <li>ボトルネック特定・分析</li>
+                                    <li>改善提案の自動生成</li>
+                                    <li>ROI測定・効果検証</li>
+                                </ul>
+                                <button class="btn btn-primary offering-btn">詳しく見る</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- お問い合わせ -->
+                <div class="contact-section">
+                    <h3 class="contact-title">お問い合わせ</h3>
+                    <div class="contact-content">
+                        <p class="contact-description">
+                            Assessment Toolについてご質問・ご相談がございましたら、
+                            お気軽にお問い合わせください。
+                        </p>
+                        <div class="contact-actions">
+                            <button class="btn btn-primary contact-btn" onclick="openContactForm()">
+                                お問い合わせフォームへ
+                            </button>
+                            <div class="contact-info">
+                                <button class="btn btn-secondary" onclick="downloadResults()">
+                                    診断結果をダウンロード
+                                </button>
+                                <button class="btn btn-secondary" onclick="restartAssessment()">
+                                    診断をやり直す
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- フッター -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2020-2022 Assessment Tool. All Rights Reserved.</p>
+        </div>
+    </footer>
+    
+    <!-- JavaScript -->
+    <script src="js/common.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+        // 診断結果データ
+        let resultData = {
+            totalScore: 0,
+            categoryScores: {},
+            answers: {}
+        };
+        
+        // カテゴリマッピング
+        const categoryMapping = {
+            '経営': { key: 'management', color: '#4A90E2' },
+            '人事': { key: 'hr', color: '#EC892E' },
+            'マーケティング': { key: 'marketing', color: '#27AE60' },
+            '営業': { key: 'sales', color: '#8E44AD' },
+            'IT': { key: 'it', color: '#E74C3C' },
+            'Others': { key: 'others', color: '#9B59B6' },
+            'その他': { key: 'others', color: '#9B59B6' }
+        };
+        
+        // ページ読み込み時の処理
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('P-05: 診断結果ページが読み込まれました');
+            
+            // 診断データの確認
+            const assessmentAnswers = Common.storage.get('assessmentAnswers');
+            const userData = Common.storage.get('userData');
+            
+            if (!assessmentAnswers || !userData) {
+                Common.ui.showAlert('診断データが見つかりません。最初からやり直してください。', 'error');
+                setTimeout(() => {
+                    Common.navigation.goToPage('index.html');
+                }, 3000);
+                return;
+            }
+            
+            // APIから結果を取得するか、ローカルで計算
+            if (userData.session_id) {
+                try {
+                    LoadingHelper.show('診断結果を取得しています...');
+                    
+                    const apiResult = await API.getResult(userData.session_id);
+                    console.log('API結果取得成功:', apiResult);
+                    
+                    // API結果を使用
+                    resultData.totalScore = apiResult.total_score;
+                    resultData.maturityLevel = apiResult.maturity_level;
+                    resultData.categoryScores = apiResult.category_scores || {};
+                    resultData.recommendedServices = apiResult.recommended_services || [];
+                    
+                    // カテゴリスコアを整形（APIから返されたデータをそのまま使用）
+                    const categoryScoresTemp = {};
+                    Object.keys(resultData.categoryScores).forEach(category => {
+                        const score = resultData.categoryScores[category];
+                        // カテゴリごとの質問数を計算（実際の質問データから）
+                        let categoryQuestionCount = 0;
+                        if (apiResult.questions_by_category && apiResult.questions_by_category[category]) {
+                            categoryQuestionCount = apiResult.questions_by_category[category];
+                        } else {
+                            // デフォルトで推定（経営3問、人事1問、マーケティング1問）
+                            if (category === '経営') categoryQuestionCount = 3;
+                            else if (category === '人事') categoryQuestionCount = 1;
+                            else if (category === 'マーケティング') categoryQuestionCount = 1;
+                            else categoryQuestionCount = 1;
+                        }
+                        
+                        categoryScoresTemp[category] = {
+                            average: score,
+                            total: score,
+                            count: categoryQuestionCount
+                        };
+                    });
+                    resultData.categoryScores = categoryScoresTemp;
+                    
+                    LoadingHelper.hide();
+                    displayResults();
+                    
+                } catch (error) {
+                    LoadingHelper.hide();
+                    console.error('API結果取得エラー:', error);
+                    // エラー時はローカル計算
+                    calculateResults(assessmentAnswers);
+                    displayResults();
+                }
+            } else {
+                // セッションIDがない場合はローカル計算
+                calculateResults(assessmentAnswers);
+                displayResults();
+            }
+        });
+        
+        // 結果計算
+        function calculateResults(answers) {
+            // サンプル質問データ（P-04と同じ構造）
+            const sampleQuestions = [
+                {
+                    question_id: 'Q001',
+                    category: '経営',
+                    options: [
+                        { score: 1 }, { score: 2 }, { score: 3 }, { score: 4 }
+                    ]
+                },
+                {
+                    question_id: 'Q002',
+                    category: '経営',
+                    options: [
+                        { score: 1 }, { score: 2 }, { score: 3 }, { score: 4 }
+                    ]
+                },
+                {
+                    question_id: 'Q003',
+                    category: '経営',
+                    options: [
+                        { score: 1 }, { score: 2 }, { score: 3 }, { score: 4 }
+                    ]
+                },
+                {
+                    question_id: 'Q004',
+                    category: '人事',
+                    options: [
+                        { score: 1 }, { score: 2 }, { score: 3 }, { score: 4 }
+                    ]
+                },
+                {
+                    question_id: 'Q005',
+                    category: 'マーケティング',
+                    options: [
+                        { score: 1 }, { score: 2 }, { score: 3 }, { score: 4 }
+                    ]
+                }
+            ];
+            
+            resultData.answers = answers;
+            resultData.categoryScores = {};
+            
+            // カテゴリ別スコア計算
+            sampleQuestions.forEach(question => {
+                const answerIndex = answers[question.question_id];
+                if (answerIndex !== null && answerIndex !== undefined) {
+                    const score = question.options[answerIndex].score;
+                    const category = question.category;
+                    
+                    if (!resultData.categoryScores[category]) {
+                        resultData.categoryScores[category] = {
+                            total: 0,
+                            count: 0,
+                            questions: []
+                        };
+                    }
+                    
+                    resultData.categoryScores[category].total += score;
+                    resultData.categoryScores[category].count += 1;
+                    resultData.categoryScores[category].questions.push({
+                        questionId: question.question_id,
+                        score: score
+                    });
+                }
+            });
+            
+            // 各カテゴリの平均スコア計算（0-100スケール）
+            Object.keys(resultData.categoryScores).forEach(category => {
+                const data = resultData.categoryScores[category];
+                data.average = (data.total / data.count) * 25; // 4点満点を100点に変換
+            });
+            
+            // 総合スコア計算
+            const categoryAverages = Object.values(resultData.categoryScores).map(data => data.average);
+            resultData.totalScore = Math.round(categoryAverages.reduce((sum, avg) => sum + avg, 0) / categoryAverages.length);
+        }
+        
+        // 結果表示
+        function displayResults() {
+            console.log('結果表示開始');
+            console.log('現在のresultData:', resultData);
+            
+            // 総合スコア表示
+            document.getElementById('totalScore').textContent = resultData.totalScore;
+            
+            // スコアカード生成
+            generateScoreCards();
+            
+            // レーダーチャート生成
+            generateRadarChart();
+        }
+        
+        // スコアカード生成
+        function generateScoreCards() {
+            const container = document.getElementById('scoreCards');
+            container.innerHTML = '';
+            
+            Object.keys(resultData.categoryScores).forEach(category => {
+                const data = resultData.categoryScores[category];
+                const mapping = categoryMapping[category] || { key: 'other', color: '#666' };
+                
+                const card = document.createElement('div');
+                card.className = 'score-card';
+                card.innerHTML = `
+                    <div class="score-card-header">
+                        <h4 class="score-card-title">${category}</h4>
+                        <div class="score-card-value" style="color: ${mapping.color}">
+                            ${Math.round(data.average)}<span class="score-unit">点</span>
+                        </div>
+                    </div>
+                    <div class="score-card-progress">
+                        <div class="score-progress-bar">
+                            <div class="score-progress-fill" style="width: ${data.average}%; background-color: ${mapping.color}"></div>
+                        </div>
+                    </div>
+                    <div class="score-card-details">
+                        <span class="score-questions">${data.count}問回答</span>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+        
+        // レーダーチャート生成
+        function generateRadarChart() {
+            console.log('チャート生成開始');
+            console.log('resultData.categoryScores:', resultData.categoryScores);
+            
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            
+            if (!resultData.categoryScores || Object.keys(resultData.categoryScores).length === 0) {
+                console.error('カテゴリスコアデータが存在しません');
+                return;
+            }
+            
+            // レーダーチャート用のデータ準備
+            let labels = Object.keys(resultData.categoryScores);
+            let data = labels.map(category => {
+                const score = resultData.categoryScores[category];
+                return typeof score === 'object' ? score.average : score;
+            });
+            
+            // レーダーチャート表示のため、最低3軸必要な場合のダミーデータ追加
+            if (labels.length < 3) {
+                console.log('レーダーチャート表示のため、ダミーデータを追加');
+                const dummyCategories = ['人事', 'マーケティング', '営業', 'IT'];
+                const availableDummies = dummyCategories.filter(cat => !labels.includes(cat));
+                
+                while (labels.length < 5 && availableDummies.length > 0) {
+                    const dummyCat = availableDummies.shift();
+                    labels.push(dummyCat);
+                    data.push(0); // ダミーデータは0点
+                }
+            }
+            
+            console.log('チャートラベル（調整後）:', labels);
+            console.log('チャートデータ（調整後）:', data);
+            
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '現在のスコア',
+                        data: data,
+                        backgroundColor: 'rgba(74, 144, 226, 0.2)',
+                        borderColor: 'rgba(74, 144, 226, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(74, 144, 226, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(74, 144, 226, 1)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: {
+                                display: true,
+                                color: '#ddd'
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 100,
+                            ticks: {
+                                stepSize: 20,
+                                font: {
+                                    size: 12
+                                }
+                            },
+                            pointLabels: {
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                },
+                                color: '#333'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+        
+        // お問い合わせフォーム開く
+        function openContactForm() {
+            alert('お問い合わせフォーム機能は Phase 4 で実装予定です');
+        }
+        
+        // 結果ダウンロード
+        function downloadResults() {
+            const userData = Common.storage.get('userData');
+            const resultSummary = {
+                company: userData.company,
+                name: `${userData.lastName} ${userData.firstName}`,
+                totalScore: resultData.totalScore,
+                categoryScores: resultData.categoryScores,
+                timestamp: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(resultSummary, null, 2)], {
+                type: 'application/json'
+            });
+            
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `dx-assessment-result-${userData.company}-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            Common.ui.showAlert('診断結果をダウンロードしました', 'success');
+        }
+        
+        // 診断をやり直す
+        function restartAssessment() {
+            if (confirm('診断を最初からやり直しますか？')) {
+                // ストレージをクリア
+                Common.storage.clear();
+                // トップページへ遷移
+                Common.navigation.goToPage('index.html');
+            }
+        }
+    </script>
+</body>
+</html>
