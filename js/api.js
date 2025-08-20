@@ -8,15 +8,21 @@
 
 // API設定
 const API_CONFIG = {
-    // GAS WebアプリケーションURL（デプロイ済み）
-    BASE_URL: 'https://script.google.com/macros/s/AKfycbwooCJeciyJfmWZ9BhN8gzsXsp6kYmd70R7_X8ghBj3tFMOKkn4cccG3ai_vjrz_ng1gw/exec',
+    // 本番環境: Vercel Functions経由でCORS問題を解決
+    // ローカル: 直接GAS APIを呼び出し
+    BASE_URL: window.location.hostname === 'assessment.haru.agency' 
+        ? 'https://assessment-tool-api.vercel.app/api/proxy'
+        : 'https://script.google.com/macros/s/AKfycbwooCJeciyJfmWZ9BhN8gzsXsp6kYmd70R7_X8ghBj3tFMOKkn4cccG3ai_vjrz_ng1gw/exec',
     
     // タイムアウト設定（ミリ秒）
     TIMEOUT: 30000,
     
     // リトライ設定
     RETRY_COUNT: 3,
-    RETRY_DELAY: 1000
+    RETRY_DELAY: 1000,
+    
+    // 環境判定
+    IS_PRODUCTION: window.location.hostname === 'assessment.haru.agency'
 };
 
 /**
@@ -31,28 +37,60 @@ class AssessmentAPI {
     }
     
     /**
-     * HTTPリクエストを実行（GETのみ、CORS回避）
+     * HTTPリクエストを実行（本番：Vercel Proxy、開発：直接GAS API）
      * @private
      */
     async makeRequest(path, params = {}) {
-        // URLパラメータを構築
-        const urlParams = new URLSearchParams();
-        urlParams.append('path', path);
+        let url;
         
-        // パラメータを追加
-        Object.keys(params).forEach(key => {
-            if (params[key] !== null && params[key] !== undefined) {
-                urlParams.append(key, typeof params[key] === 'object' ? JSON.stringify(params[key]) : params[key]);
-            }
-        });
+        if (API_CONFIG.IS_PRODUCTION) {
+            // 本番環境: Vercel Functions経由でCORS解決
+            const urlParams = new URLSearchParams();
+            urlParams.append('path', path);
+            
+            // パラメータを追加
+            Object.keys(params).forEach(key => {
+                if (params[key] !== null && params[key] !== undefined) {
+                    urlParams.append(key, typeof params[key] === 'object' ? JSON.stringify(params[key]) : params[key]);
+                }
+            });
+            
+            url = `${this.baseUrl}?${urlParams.toString()}`;
+            
+        } else {
+            // 開発環境: 直接GAS APIを呼び出し
+            const urlParams = new URLSearchParams();
+            urlParams.append('path', path);
+            
+            // パラメータを追加
+            Object.keys(params).forEach(key => {
+                if (params[key] !== null && params[key] !== undefined) {
+                    urlParams.append(key, typeof params[key] === 'object' ? JSON.stringify(params[key]) : params[key]);
+                }
+            });
+            
+            url = `${this.baseUrl}?${urlParams.toString()}`;
+        }
         
-        const url = `${this.baseUrl}?${urlParams.toString()}`;
+        console.log(`[API] ${API_CONFIG.IS_PRODUCTION ? 'PROD' : 'DEV'} Request to: ${url}`);
         
         // リトライ機能付きリクエスト
         let lastError;
         for (let i = 0; i < this.retryCount; i++) {
             try {
-                const response = await this.fetchWithTimeout(url, { method: 'GET' });
+                const fetchOptions = { 
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                };
+                
+                // 本番環境では Origin ヘッダーを明示的に設定
+                if (API_CONFIG.IS_PRODUCTION) {
+                    fetchOptions.headers['Origin'] = 'https://assessment.haru.agency';
+                }
+                
+                const response = await this.fetchWithTimeout(url, fetchOptions);
                 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -65,10 +103,11 @@ class AssessmentAPI {
                     throw new Error(result.error || 'Unknown API error');
                 }
                 
+                console.log(`[API] Request successful on attempt ${i + 1}`);
                 return result;
                 
             } catch (error) {
-                console.error(`Request attempt ${i + 1} failed:`, error);
+                console.error(`[API] Request attempt ${i + 1} failed:`, error);
                 lastError = error;
                 
                 // リトライ前に待機
