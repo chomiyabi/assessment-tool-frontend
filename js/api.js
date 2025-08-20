@@ -10,7 +10,7 @@
 const API_CONFIG = {
     // 本番環境: Vercel Functions経由でCORS問題を解決
     // ローカル: 直接GAS APIを呼び出し
-    BASE_URL: window.location.hostname === 'assessment.haru.agency' 
+    BASE_URL: window.location.hostname === 'haru-assessment.com' 
         ? 'https://assessment-tool-2j14hc8kg-chomiyabis-projects.vercel.app/api/proxy'
         : 'https://script.google.com/macros/s/AKfycbwooCJeciyJfmWZ9BhN8gzsXsp6kYmd70R7_X8ghBj3tFMOKkn4cccG3ai_vjrz_ng1gw/exec',
     
@@ -22,7 +22,7 @@ const API_CONFIG = {
     RETRY_DELAY: 1000,
     
     // 環境判定
-    IS_PRODUCTION: window.location.hostname === 'assessment.haru.agency'
+    IS_PRODUCTION: window.location.hostname === 'haru-assessment.com'
 };
 
 /**
@@ -87,7 +87,7 @@ class AssessmentAPI {
                 
                 // 本番環境では Origin ヘッダーを明示的に設定
                 if (API_CONFIG.IS_PRODUCTION) {
-                    fetchOptions.headers['Origin'] = 'https://assessment.haru.agency';
+                    fetchOptions.headers['Origin'] = 'https://haru-assessment.com';
                 }
                 
                 const response = await this.fetchWithTimeout(url, fetchOptions);
