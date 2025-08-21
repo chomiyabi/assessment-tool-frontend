@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>CORS Proxy</title>
+</head>
+<body>
+    <h1>CORS Proxy for Assessment Tool</h1>
+    <p>This page acts as a proxy to bypass CORS issues.</p>
+    
+    <script>
+        // URLパラメータからAPIリクエストを取得
+        const urlParams = new URLSearchParams(window.location.search);
+        const apiUrl = urlParams.get('url');
+        const callback = urlParams.get('callback');
+        
+        if (apiUrl) {
+            fetch(decodeURIComponent(apiUrl))
+                .then(response => response.json())
+                .then(data => {
+                    // 親ウィンドウにデータを送信
+                    if (window.opener && callback) {
+                        window.opener[callback](data);
+                        window.close();
+                    } else {
+                        document.body.innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Proxy error:', error);
+                    document.body.innerHTML = '<p>Error: ' + error.message + '</p>';
+                });
+        }
+    </script>
+</body>
+</html>

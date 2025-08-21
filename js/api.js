@@ -34,7 +34,7 @@ class AssessmentAPI {
     }
     
     /**
-     * HTTPリクエストを実行（本番：Vercel Proxy、開発：直接GAS API）
+     * HTTPリクエストを実行（JSONP方式でCORS回避）
      * @private
      */
     async makeRequest(path, params = {}) {

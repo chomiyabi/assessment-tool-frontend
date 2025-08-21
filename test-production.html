@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>本番環境テスト</title>
+</head>
+<body>
+    <h1>GAS API テスト（CORS回避）</h1>
+    
+    <button onclick="testAPI()">テスト実行</button>
+    
+    <div id="result"></div>
+    
+    <script>
+        async function testAPI() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'テスト中...';
+            
+            try {
+                // シンプルなGETリクエスト（imgタグでCORS回避）
+                const img = new Image();
+                const url = 'https://script.google.com/macros/s/AKfycbwooCJeciyJfmWZ9BhN8gzsXsp6kYmd70R7_X8ghBj3tFMOKkn4cccG3ai_vjrz_ng1gw/exec?path=health';
+                
+                img.onload = () => {
+                    resultDiv.innerHTML = '✅ APIアクセス成功（画像として）';
+                };
+                
+                img.onerror = () => {
+                    resultDiv.innerHTML = '❌ APIアクセス失敗';
+                };
+                
+                img.src = url;
+                
+                // 通常のfetchも試す
+                setTimeout(async () => {
+                    try {
+                        const response = await fetch(url, {
+                            method: 'GET',
+                            mode: 'no-cors' // no-corsモードで試す
+                        });
+                        resultDiv.innerHTML += '<br>✅ Fetch成功（no-corsモード）';
+                    } catch (error) {
+                        resultDiv.innerHTML += '<br>❌ Fetch失敗: ' + error.message;
+                    }
+                }, 1000);
+                
+            } catch (error) {
+                resultDiv.innerHTML = 'エラー: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>
