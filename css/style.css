@@ -1013,6 +1013,16 @@ h3 {
 
 .question-option input[type="radio"]:focus {
     outline: none;
+    scroll-margin: 0;
+}
+
+/* Prevent any focus-based scrolling on question options */
+.question-option {
+    scroll-margin: 0;
+}
+
+.question-option:focus-within {
+    scroll-margin: 0;
 }
 
 .question-option label {

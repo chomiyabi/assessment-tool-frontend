@@ -145,6 +145,30 @@
             }
         ];
         
+        // スクロールロック機能
+        let scrollLocked = false;
+        let lockedScrollPosition = 0;
+        
+        function lockScroll() {
+            scrollLocked = true;
+            lockedScrollPosition = window.scrollY;
+            document.body.style.overflow = 'hidden';
+            document.body.style.position = 'fixed';
+            document.body.style.top = `-${lockedScrollPosition}px`;
+            document.body.style.width = '100%';
+        }
+        
+        function unlockScroll() {
+            if (scrollLocked) {
+                document.body.style.removeProperty('overflow');
+                document.body.style.removeProperty('position');
+                document.body.style.removeProperty('top');
+                document.body.style.removeProperty('width');
+                window.scrollTo(0, lockedScrollPosition);
+                scrollLocked = false;
+            }
+        }
+        
         // ページ読み込み時の処理
         document.addEventListener('DOMContentLoaded', async function() {
             console.log('P-04: 診断ページが読み込まれました');
@@ -272,7 +296,8 @@
                                name="${question.question_id}" 
                                value="${optionIndex}"
                                ${isChecked}
-                               onchange="saveAnswer('${question.question_id}', ${optionIndex}, ${option.score})">
+                               onchange="saveAnswer('${question.question_id}', ${optionIndex}, ${option.score})"
+                               onfocus="preventScrollOnFocus(event)">
                         <label for="${question.question_id}_${optionIndex}">
                             ${option.text}
                         </label>
@@ -304,32 +329,44 @@
             return 1;
         }
         
+        // フォーカス時のスクロール防止
+        function preventScrollOnFocus(event) {
+            event.preventDefault();
+            const currentScrollY = window.scrollY;
+            setTimeout(() => {
+                window.scrollTo({ top: currentScrollY, behavior: 'instant' });
+            }, 0);
+        }
+        
         // 回答保存
         function saveAnswer(questionId, optionIndex, score) {
-            // スクロール防止のため、現在のスクロール位置を記録
-            const currentScrollY = window.scrollY;
+            console.log('回答保存開始:', questionId, optionIndex, score);
             
-            assessmentState.answers[questionId] = optionIndex;
+            // スクロールをロック
+            lockScroll();
             
-            // 現在のカテゴリの全質問に回答済みかチェック
-            const currentCategory = assessmentState.categories[assessmentState.currentCategoryIndex];
-            const currentQuestions = assessmentState.categorizedQuestions[currentCategory] || [];
-            
-            const allAnswered = currentQuestions.every(q => 
-                assessmentState.answers[q.question_id] !== null
-            );
-            
-            // 次へボタンの有効/無効切り替え
-            document.getElementById('nextButton').disabled = !allAnswered;
-            
-            // 意図しないスクロールが発生した場合、元の位置に戻す
-            setTimeout(() => {
-                if (Math.abs(window.scrollY - currentScrollY) > 10) {
-                    window.scrollTo(0, currentScrollY);
-                }
-            }, 0);
-            
-            console.log('回答保存:', questionId, optionIndex, score);
+            try {
+                assessmentState.answers[questionId] = optionIndex;
+                
+                // 現在のカテゴリの全質問に回答済みかチェック
+                const currentCategory = assessmentState.categories[assessmentState.currentCategoryIndex];
+                const currentQuestions = assessmentState.categorizedQuestions[currentCategory] || [];
+                
+                const allAnswered = currentQuestions.every(q => 
+                    assessmentState.answers[q.question_id] !== null
+                );
+                
+                // 次へボタンの有効/無効切り替え
+                document.getElementById('nextButton').disabled = !allAnswered;
+                
+                console.log('回答保存完了:', questionId, optionIndex, score);
+                
+            } finally {
+                // スクロールのロックを解除
+                setTimeout(() => {
+                    unlockScroll();
+                }, 100);
+            }
         }
         
         // プログレス更新
