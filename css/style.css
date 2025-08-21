@@ -483,8 +483,8 @@ h3 {
     font-size: 48px;
     font-weight: var(--font-weight-bold);
     margin-bottom: 24px;
-    text-shadow: var(--shadow-medium);
-    color: white;
+    text-shadow: 0 2px 4px rgba(255, 255, 255, 0.3);
+    color: white !important;
 }
 
 .hero-subtitle {
