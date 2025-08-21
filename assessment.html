@@ -145,29 +145,6 @@
             }
         ];
         
-        // スクロールロック機能
-        let scrollLocked = false;
-        let lockedScrollPosition = 0;
-        
-        function lockScroll() {
-            scrollLocked = true;
-            lockedScrollPosition = window.scrollY;
-            document.body.style.overflow = 'hidden';
-            document.body.style.position = 'fixed';
-            document.body.style.top = `-${lockedScrollPosition}px`;
-            document.body.style.width = '100%';
-        }
-        
-        function unlockScroll() {
-            if (scrollLocked) {
-                document.body.style.removeProperty('overflow');
-                document.body.style.removeProperty('position');
-                document.body.style.removeProperty('top');
-                document.body.style.removeProperty('width');
-                window.scrollTo(0, lockedScrollPosition);
-                scrollLocked = false;
-            }
-        }
         
         // ページ読み込み時の処理
         document.addEventListener('DOMContentLoaded', async function() {
@@ -297,7 +274,7 @@
                                value="${optionIndex}"
                                ${isChecked}
                                onchange="saveAnswer('${question.question_id}', ${optionIndex}, ${option.score})"
-                               onfocus="preventScrollOnFocus(event)">
+                               onclick="handleRadioClick(event, '${question.question_id}', ${optionIndex}, ${option.score})">
                         <label for="${question.question_id}_${optionIndex}">
                             ${option.text}
                         </label>
@@ -329,44 +306,42 @@
             return 1;
         }
         
-        // フォーカス時のスクロール防止
-        function preventScrollOnFocus(event) {
-            event.preventDefault();
-            const currentScrollY = window.scrollY;
+        // ラジオボタンクリック処理
+        function handleRadioClick(event, questionId, optionIndex, score) {
+            // スクロール位置を記録
+            const scrollY = window.scrollY;
+            
+            // 短時間だけスクロールを監視して防止
+            const preventScroll = (e) => {
+                e.preventDefault();
+                window.scrollTo(0, scrollY);
+            };
+            
+            // スクロールイベントを一時的にブロック
+            window.addEventListener('scroll', preventScroll, { passive: false });
+            
+            // 100msでブロックを解除
             setTimeout(() => {
-                window.scrollTo({ top: currentScrollY, behavior: 'instant' });
-            }, 0);
+                window.removeEventListener('scroll', preventScroll);
+            }, 100);
         }
         
         // 回答保存
         function saveAnswer(questionId, optionIndex, score) {
-            console.log('回答保存開始:', questionId, optionIndex, score);
+            assessmentState.answers[questionId] = optionIndex;
             
-            // スクロールをロック
-            lockScroll();
+            // 現在のカテゴリの全質問に回答済みかチェック
+            const currentCategory = assessmentState.categories[assessmentState.currentCategoryIndex];
+            const currentQuestions = assessmentState.categorizedQuestions[currentCategory] || [];
             
-            try {
-                assessmentState.answers[questionId] = optionIndex;
-                
-                // 現在のカテゴリの全質問に回答済みかチェック
-                const currentCategory = assessmentState.categories[assessmentState.currentCategoryIndex];
-                const currentQuestions = assessmentState.categorizedQuestions[currentCategory] || [];
-                
-                const allAnswered = currentQuestions.every(q => 
-                    assessmentState.answers[q.question_id] !== null
-                );
-                
-                // 次へボタンの有効/無効切り替え
-                document.getElementById('nextButton').disabled = !allAnswered;
-                
-                console.log('回答保存完了:', questionId, optionIndex, score);
-                
-            } finally {
-                // スクロールのロックを解除
-                setTimeout(() => {
-                    unlockScroll();
-                }, 100);
-            }
+            const allAnswered = currentQuestions.every(q => 
+                assessmentState.answers[q.question_id] !== null
+            );
+            
+            // 次へボタンの有効/無効切り替え
+            document.getElementById('nextButton').disabled = !allAnswered;
+            
+            console.log('回答保存:', questionId, optionIndex, score);
         }
         
         // プログレス更新
