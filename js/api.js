@@ -71,6 +71,9 @@ class AssessmentAPI {
             url = `${this.baseUrl}?${urlParams.toString()}`;
         }
         
+        console.log(`[API] Hostname: ${window.location.hostname}`);
+        console.log(`[API] IS_PRODUCTION: ${API_CONFIG.IS_PRODUCTION}`);
+        console.log(`[API] BASE_URL: ${API_CONFIG.BASE_URL}`);
         console.log(`[API] ${API_CONFIG.IS_PRODUCTION ? 'PROD' : 'DEV'} Request to: ${url}`);
         
         // リトライ機能付きリクエスト
