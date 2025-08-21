@@ -5,6 +5,16 @@
     box-sizing: border-box;
 }
 
+/* Prevent unwanted focus scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Prevent radio buttons from triggering scroll on focus */
+input[type="radio"]:focus {
+    scroll-margin: 0;
+}
+
 /* CSS Custom Properties - Spec.md Section 6.4完全準拠のデザインシステム */
 :root {
     /* メインカラーパレット (Spec.md Section 6.4) */
@@ -997,6 +1007,12 @@ h3 {
     cursor: pointer;
     flex-shrink: 0;
     margin-top: 2px;
+    /* Prevent focus from causing unwanted scroll behavior */
+    scroll-margin: 0;
+}
+
+.question-option input[type="radio"]:focus {
+    outline: none;
 }
 
 .question-option label {

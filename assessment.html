@@ -306,6 +306,9 @@
         
         // 回答保存
         function saveAnswer(questionId, optionIndex, score) {
+            // スクロール防止のため、現在のスクロール位置を記録
+            const currentScrollY = window.scrollY;
+            
             assessmentState.answers[questionId] = optionIndex;
             
             // 現在のカテゴリの全質問に回答済みかチェック
@@ -318,6 +321,13 @@
             
             // 次へボタンの有効/無効切り替え
             document.getElementById('nextButton').disabled = !allAnswered;
+            
+            // 意図しないスクロールが発生した場合、元の位置に戻す
+            setTimeout(() => {
+                if (Math.abs(window.scrollY - currentScrollY) > 10) {
+                    window.scrollTo(0, currentScrollY);
+                }
+            }, 0);
             
             console.log('回答保存:', questionId, optionIndex, score);
         }
