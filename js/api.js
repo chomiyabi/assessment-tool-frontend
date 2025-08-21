@@ -8,8 +8,10 @@
 
 // API設定
 const API_CONFIG = {
-    // 緊急回避: 直接GAS APIを使用（CORS問題を回避するため）
-    BASE_URL: 'https://script.google.com/macros/s/AKfycbwooCJeciyJfmWZ9BhN8gzsXsp6kYmd70R7_X8ghBj3tFMOKkn4cccG3ai_vjrz_ng1gw/exec',
+    // Netlify Functions経由でCORS問題を解決
+    BASE_URL: window.location.hostname.includes('netlify.app') || window.location.hostname === 'haru-assessment.com'
+        ? '/.netlify/functions/gas-proxy'
+        : 'https://script.google.com/macros/s/AKfycbwooCJeciyJfmWZ9BhN8gzsXsp6kYmd70R7_X8ghBj3tFMOKkn4cccG3ai_vjrz_ng1gw/exec',
     
     // タイムアウト設定（ミリ秒）
     TIMEOUT: 30000,
@@ -19,7 +21,7 @@ const API_CONFIG = {
     RETRY_DELAY: 1000,
     
     // 環境判定
-    IS_PRODUCTION: window.location.hostname === 'haru-assessment.com'
+    IS_PRODUCTION: window.location.hostname.includes('netlify.app') || window.location.hostname === 'haru-assessment.com'
 };
 
 /**
