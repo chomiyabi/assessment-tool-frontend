@@ -262,7 +262,7 @@
             // APIから結果を取得するか、ローカルで計算
             if (userData.session_id) {
                 try {
-                    LoadingHelper.show('診断結果を取得しています...');
+                    LoadingHelper.show('少々お待ちください');
                     
                     const apiResult = await API.getResult(userData.session_id);
                     console.log('API結果取得成功:', apiResult);

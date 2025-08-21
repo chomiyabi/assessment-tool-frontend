@@ -162,7 +162,7 @@
             
             // APIから質問データを取得
             try {
-                LoadingHelper.show('質問データを読み込んでいます...');
+                LoadingHelper.show('少々お待ちください');
                 const result = await API.getQuestions();
                 
                 if (result.questions && result.questions.length > 0) {
@@ -420,7 +420,7 @@
             
             try {
                 // APIに回答を送信
-                LoadingHelper.show('診断結果を保存しています...');
+                LoadingHelper.show('少々お待ちください');
                 
                 const result = await API.saveAnswers(
                     userData.session_id,

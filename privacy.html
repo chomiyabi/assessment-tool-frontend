@@ -88,29 +88,11 @@
     <script src="js/api.js?v=4.2.0"></script>
     <script>
         // ページ読み込み時の処理
-        document.addEventListener('DOMContentLoaded', async function() {
+        document.addEventListener('DOMContentLoaded', function() {
             console.log('P-02: プライバシーポリシーページが読み込まれました');
             
-            // APIから設定情報を取得（プライバシーポリシー本文）
-            try {
-                LoadingHelper.show('プライバシーポリシーを読み込んでいます...');
-                const config = await API.getConfig();
-                
-                // プライバシーポリシーが取得できた場合は更新
-                if (config.privacy_policy) {
-                    const privacyElement = document.querySelector('.article-content');
-                    if (privacyElement) {
-                        // 最初の条項要素のテキストを更新
-                        privacyElement.textContent = config.privacy_policy;
-                    }
-                }
-                
-                LoadingHelper.hide();
-            } catch (error) {
-                console.error('設定情報の取得に失敗:', error);
-                LoadingHelper.hide();
-                // エラーが発生しても、ページは静的コンテンツで表示を続ける
-            }
+            // 固定のプライバシーポリシー表示のため、API呼び出しを廃止
+            // ロード時間を短縮し、レスポンスを向上
             
             const agreeCheckbox = document.getElementById('agreePrivacy');
             const nextButton = document.getElementById('nextButton');
