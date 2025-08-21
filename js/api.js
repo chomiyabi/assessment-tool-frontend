@@ -1,28 +1,31 @@
 /**
  * Assessment Tool API クライアント - CORS修正版
- * Google Apps Script の CORS制限を回避するため、GETリクエストベースに変更
+ * Google Apps Script の CORS制限を回避するため、Netlify Functions使用
  * 
- * @version 4.1.0
+ * @version 4.2.0
  * @description Google Apps Script APIとの通信を管理（CORS対応）
  */
 
 // API設定
 const API_CONFIG = {
-    // Netlify Functions経由でCORS問題を解決
-    BASE_URL: window.location.hostname.includes('netlify.app') || window.location.hostname === 'haru-assessment.com'
-        ? '/.netlify/functions/gas-proxy'
-        : 'https://script.google.com/macros/s/AKfycbwooCJeciyJfmWZ9BhN8gzsXsp6kYmd70R7_X8ghBj3tFMOKkn4cccG3ai_vjrz_ng1gw/exec',
+    // 環境判定（より確実な方法）
+    IS_PRODUCTION: window.location.protocol === 'https:' && 
+                   (window.location.hostname.includes('netlify.app') || 
+                    window.location.hostname === 'haru-assessment.com' ||
+                    window.location.hostname === 'www.haru-assessment.com'),
     
     // タイムアウト設定（ミリ秒）
     TIMEOUT: 30000,
     
     // リトライ設定
     RETRY_COUNT: 3,
-    RETRY_DELAY: 1000,
-    
-    // 環境判定
-    IS_PRODUCTION: window.location.hostname.includes('netlify.app') || window.location.hostname === 'haru-assessment.com'
+    RETRY_DELAY: 1000
 };
+
+// BASE_URLを動的に設定
+API_CONFIG.BASE_URL = API_CONFIG.IS_PRODUCTION 
+    ? '/.netlify/functions/gas-proxy'
+    : 'https://script.google.com/macros/s/AKfycbwooCJeciyJfmWZ9BhN8gzsXsp6kYmd70R7_X8ghBj3tFMOKkn4cccG3ai_vjrz_ng1gw/exec';
 
 /**
  * Assessment Tool API クライアントクラス
@@ -72,6 +75,7 @@ class AssessmentAPI {
         }
         
         console.log(`[API] Hostname: ${window.location.hostname}`);
+        console.log(`[API] Protocol: ${window.location.protocol}`);
         console.log(`[API] IS_PRODUCTION: ${API_CONFIG.IS_PRODUCTION}`);
         console.log(`[API] BASE_URL: ${API_CONFIG.BASE_URL}`);
         console.log(`[API] ${API_CONFIG.IS_PRODUCTION ? 'PROD' : 'DEV'} Request to: ${url}`);
