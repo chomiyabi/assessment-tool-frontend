@@ -267,14 +267,13 @@
             question.options.forEach((option, optionIndex) => {
                 const isChecked = currentAnswer === optionIndex ? 'checked' : '';
                 optionsHtml += `
-                    <div class="question-option">
+                    <div class="question-option" onclick="handleOptionClick(event, '${question.question_id}', ${optionIndex}, ${option.score})">
                         <input type="radio" 
                                id="${question.question_id}_${optionIndex}" 
                                name="${question.question_id}" 
                                value="${optionIndex}"
                                ${isChecked}
-                               onchange="saveAnswer('${question.question_id}', ${optionIndex}, ${option.score})"
-                               onclick="handleRadioClick(event, '${question.question_id}', ${optionIndex}, ${option.score})">
+                               onchange="saveAnswer('${question.question_id}', ${optionIndex}, ${option.score})">
                         <label for="${question.question_id}_${optionIndex}">
                             ${option.text}
                         </label>
@@ -306,8 +305,8 @@
             return 1;
         }
         
-        // ラジオボタンクリック処理
-        function handleRadioClick(event, questionId, optionIndex, score) {
+        // オプション全体のクリック処理（ラベルクリックにも対応）
+        function handleOptionClick(event, questionId, optionIndex, score) {
             // スクロール位置を記録
             const scrollY = window.scrollY;
             
@@ -320,10 +319,21 @@
             // スクロールイベントを一時的にブロック
             window.addEventListener('scroll', preventScroll, { passive: false });
             
+            // ラジオボタンをプログラム的に選択
+            const radioButton = event.currentTarget.querySelector('input[type="radio"]');
+            if (radioButton && !radioButton.checked) {
+                radioButton.checked = true;
+                saveAnswer(questionId, optionIndex, score);
+            }
+            
             // 100msでブロックを解除
             setTimeout(() => {
                 window.removeEventListener('scroll', preventScroll);
             }, 100);
+            
+            // イベントの伝播を停止してラベルの標準動作と競合を避ける
+            event.preventDefault();
+            event.stopPropagation();
         }
         
         // 回答保存
