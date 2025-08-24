@@ -621,6 +621,7 @@ h3 {
     border: 1px solid var(--color-border);
 }
 
+
 .privacy-section-title {
     font-size: var(--font-size-h2);
     font-weight: var(--font-weight-semibold);
@@ -652,6 +653,18 @@ h3 {
     line-height: 1.8;
     color: var(--color-text);
     margin-bottom: 0;
+}
+
+.privacy-list {
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--color-text);
+    margin: 10px 0;
+    padding-left: 40px;
+}
+
+.privacy-list li {
+    margin-bottom: 8px;
 }
 
 .privacy-subsection {
@@ -737,6 +750,11 @@ h3 {
     
     .article-content {
         font-size: 13px;
+    }
+    
+    .privacy-list {
+        font-size: 13px;
+        padding-left: 30px;
     }
     
     .privacy-subsection {

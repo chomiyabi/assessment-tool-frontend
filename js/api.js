@@ -23,9 +23,13 @@ const API_CONFIG = {
 };
 
 // BASE_URLを動的に設定
+// ローカル開発時はCORSプロキシを使用（オプション）
+const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbwooCJeciyJfmWZ9BhN8gzsXsp6kYmd70R7_X8ghBj3tFMOKkn4cccG3ai_vjrz_ng1gw/exec';
+
 API_CONFIG.BASE_URL = API_CONFIG.IS_PRODUCTION 
     ? '/.netlify/functions/gas-proxy'
-    : 'https://script.google.com/macros/s/AKfycbwooCJeciyJfmWZ9BhN8gzsXsp6kYmd70R7_X8ghBj3tFMOKkn4cccG3ai_vjrz_ng1gw/exec';
+    : GAS_URL;  // ローカルでも直接アクセスを試みる
 
 /**
  * Assessment Tool API クライアントクラス

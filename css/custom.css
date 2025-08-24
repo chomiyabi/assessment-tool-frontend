@@ -1,0 +1,328 @@
+/* Custom styles for Ridgeline-inspired design */
+
+/* Remove default body styles */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Noto Sans JP", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Main content wrapper */
+.main-content {
+    background: #ffffff;
+    min-height: 100vh;
+}
+
+/* Gradient Hero Section */
+.gradient-hero {
+    background: linear-gradient(135deg, #1a237e 0%, #3949ab 100%);
+    padding: 100px 0 80px;
+    color: white;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.gradient-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.05" d="M0,160L48,144C96,128,192,96,288,106.7C384,117,480,171,576,165.3C672,160,768,96,864,90.7C960,85,1056,139,1152,149.3C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+    background-size: cover;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.hero-title {
+    font-size: 48px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    letter-spacing: 0.02em;
+}
+
+.hero-tagline {
+    font-size: 20px;
+    font-weight: 400;
+    opacity: 0.95;
+    margin-bottom: 40px;
+}
+
+/* Content Sections */
+.content-section,
+.features-section,
+.framework-section {
+    padding: 60px 0;
+    background: #ffffff;
+}
+
+.features-section {
+    background: #f8f9fa;
+}
+
+.framework-section {
+    padding-bottom: 80px;
+}
+
+.content-block {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.section-title {
+    font-size: 36px;
+    font-weight: 700;
+    color: #1a237e;
+    text-align: center;
+    margin-bottom: 20px;
+    line-height: 1.4;
+}
+
+.section-lead {
+    font-size: 18px;
+    color: #666;
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 60px;
+    line-height: 1.8;
+}
+
+.content-text {
+    font-size: 18px;
+    line-height: 1.8;
+    color: #555;
+    margin-bottom: 40px;
+}
+
+.content-text p {
+    margin-bottom: 20px;
+}
+
+/* Orange CTA Button */
+.btn-orange {
+    background: linear-gradient(135deg, #ff6b35 0%, #f4511e 100%);
+    color: white;
+    border: none;
+    padding: 16px 80px;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+    display: inline-block;
+    text-decoration: none;
+    min-width: 320px;
+}
+
+.btn-orange:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+    background: linear-gradient(135deg, #f4511e 0%, #ff6b35 100%);
+}
+
+.cta-button {
+    text-align: center;
+    margin: 40px 0;
+}
+
+/* Benefits Grid */
+.benefits-grid {
+    margin-top: 60px;
+}
+
+.benefits-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1a237e;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.benefit-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.benefit-card {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    border: 1px solid #e0e0e0;
+}
+
+.benefit-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.benefit-icon {
+    font-size: 32px;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #ff6b35;
+    font-weight: bold;
+}
+
+.benefit-card h4 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1a237e;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.benefit-card p {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.7;
+    text-align: left;
+}
+
+/* Framework Section */
+.framework-image {
+    text-align: center;
+    margin: 40px auto;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 12px;
+}
+
+.framework-text {
+    margin-top: 40px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.framework-text p {
+    font-size: 18px;
+    line-height: 1.8;
+    margin-bottom: 20px;
+    color: #555;
+}
+
+.framework-text strong {
+    color: #1a237e;
+}
+
+.framework-details {
+    margin-top: 60px;
+}
+
+.framework-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 30px;
+    background: white;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+}
+
+.framework-item:hover {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.framework-number {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #ff6b35 0%, #f4511e 100%);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 18px;
+    margin-right: 20px;
+}
+
+.framework-content h4 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a237e;
+    margin-bottom: 10px;
+}
+
+.framework-content p {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.7;
+    margin: 0;
+}
+
+/* Header adjustments */
+.header {
+    background: #1a237e;
+    padding: 20px 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.header .logo {
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+/* Footer adjustments */
+.footer {
+    background: #1a237e;
+    color: white;
+    padding: 30px 0;
+    text-align: center;
+    font-size: 14px;
+    margin-top: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 32px;
+    }
+    
+    .hero-tagline {
+        font-size: 16px;
+    }
+    
+    .section-title {
+        font-size: 28px;
+    }
+    
+    .benefit-cards {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .framework-item {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .framework-number {
+        margin: 0 auto 15px;
+    }
+    
+    .btn-orange {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+}

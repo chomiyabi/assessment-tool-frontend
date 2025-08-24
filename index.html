@@ -2,9 +2,11 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DX Web診断 - 生成AI活用 業務効率化Web診断</title>
+    <title>業務改善ポテンシャルWEB診断 - Haru Automation</title>
     <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/custom.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- CSS読み込み確認用 -->
     <style>
@@ -23,27 +25,96 @@
     <!-- ヘッダー -->
     <header class="header">
         <div class="container">
-            <h1 class="logo">Assessment Tool</h1>
+            <h1 class="logo">Haru Automation</h1>
         </div>
     </header>
     
     <!-- メインコンテンツ -->
-    <main class="main">
+    <main class="main-content">
         <!-- ヒーローセクション -->
-        <section class="hero-section">
+        <section class="hero-section gradient-hero">
             <div class="container">
                 <div class="hero-content">
-                    <h1 class="hero-title">AI活用度診断</h1>
-                    <p class="hero-subtitle">本Web診断は会社のDXの推進度を、10問のアンケートを通じて行う簡易的なDX診断です。</p>
-                    
-                    <div class="hero-description">
-                        <p>Assessment Toolでは、企業のDX推進に向けた現状や課題を認識するためのDX診断サービスを提供しています。DX診断サービスは、IPAが定める「DX推進指標」に技術指標をプラスしたAssessment Tool独自の指標に基づき診断します。</p>
-                        <p class="mt-2">本Web診断では、上記DX診断サービスの簡易版を体験して頂くことができます。</p>
+                    <h1 class="hero-title">業務改善ポテンシャルWEB診断</h1>
+                </div>
+            </div>
+        </section>
+        
+        <!-- メインコンテンツセクション -->
+        <section class="content-section">
+            <div class="container">
+                <div class="content-block">
+                    <h2 class="section-title">3分でわかる、あなたの会社の<br>「AI業務改善ポテンシャル」</h2>
+                    <div class="content-text">
+                        <p>多くの企業がAIの重要性に気づき始めています。しかし、「何から手をつければいいかわからない」「生成AIを導入したが、単体では業務にうまく組み込めない」「専任の担当者がおらず、具体的な検討が進まない」といった声が後を絶ちません。</p>
+                        <p>AIは、ただ導入するだけでは宝の持ち腐れです。ChatGPTのような生成AIと、Zapierや各種自動化ツールを連携させて初めて、業務は劇的に変わります。</p>
+                        <p>「Haru Automation 業務改善ポテンシャル診断」は、あなたの会社がAIと各種ツールを連携させて業務を改善するポテンシャルがどれだけあるのかを、わずか3分で可視化する無料のWebサービスです。現状を正しく把握し、次の一手を見つけましょう。</p>
                     </div>
-                    
-                    <div class="hero-action">
-                        <button class="btn btn-primary btn-large" onclick="startAssessment()">
-                            次へ
+                    <div class="cta-button">
+                        <button class="btn btn-orange btn-large" onclick="startAssessment()">
+                            WEB診断へ進む
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 診断で得られることセクション -->
+        <section class="features-section">
+            <div class="container">
+                <div class="content-block">
+                    <h2 class="section-title">12の質問に答えるだけで、<br>貴社の「現在地」と「伸びしろ」がわかる</h2>
+                    <p class="section-lead">本診断では、AI活用における重要な3つの観点から、全12問の簡単な選択式質問にお答えいただきます。専門知識は不要です。現状をありのままご回答ください。</p>
+                    <div class="benefits-grid">
+                        <h3 class="benefits-title">【診断で得られること】</h3>
+                        <div class="benefit-cards">
+                            <div class="benefit-card">
+                                <div class="benefit-icon">■</div>
+                                <h4>AI活用レベルのスコア化</h4>
+                                <p>貴社の業務改善ポテンシャルを客観的なスコアで算出。自社がどの位置にいるのかを把握できます。</p>
+                            </div>
+                            <div class="benefit-card">
+                                <div class="benefit-icon">■</div>
+                                <h4>強み・弱みの可視化</h4>
+                                <p>独自のフレームワークに基づき、あなたの会社の「ツールの知識」「使いこなすスキル」「改善アイデアの発想力」を分析。強みと弱みをレーダーチャートで分かりやすく可視化し、どこから手をつけるべきかを明確にします。</p>
+                            </div>
+                            <div class="benefit-card">
+                                <div class="benefit-icon">■</div>
+                                <h4>次のアクションプラン</h4>
+                                <p>診断結果に基づき、貴社の状況に合わせた業務改善の具体的なヒントと、次に取り組むべきアクションプランをご提案します。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cta-button">
+                        <button class="btn btn-orange btn-large" onclick="startAssessment()">
+                            WEB診断へ進む
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- フレームワークセクション -->
+        <section class="framework-section">
+            <div class="container">
+                <div class="content-block">
+                    <h2 class="section-title">30社以上の導入支援から生まれた独自フレームワーク</h2>
+                    <p class="section-lead">本診断は、これまで30社以上の企業様に生成AIの導入コンサルティングを提供してきた経験から生まれた、独自フレームワーク『AI Engaged Wheel』に基づいています。AIを本当に使いこなし、成果を出すために不可欠な3つの要素を、バランス良く評価します。</p>
+                    <!-- AI Engaged Wheel 画像 -->
+                    <div class="framework-image">
+                        <img src="https://raw.githubusercontent.com/YOUR_USERNAME/assessment-tool-frontend/main/AIE.png" 
+                             alt="AI Engaged Wheel" 
+                             style="max-width: 600px; width: 100%; height: auto; display: block; margin: 0 auto;"
+                             onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=\'padding: 60px 20px; background: #f0f4f8; border-radius: 12px; color: #666;\'><p style=\'font-size: 16px; margin: 0;\'>AI Engaged Wheelフレームワーク図</p><p style=\'font-size: 14px; margin-top: 10px;\'>Knowledge・Skill・Ideaの3要素を<br>バランス良く評価します</p></div>';">
+                    </div>
+                    <div class="framework-text">
+                        <p><strong>① Knowledge（ツールの知識）</strong> ChatGPTやGeminiだけではありません。それらと連携する自動化ツール（Zapier, n8nなど）や、ローコードツールまで含めた幅広い知識は、打ち手を広げるための土台となります。</p>
+                        <p><strong>② Skill（使いこなすスキル）</strong> ツールの機能を最大限に引き出す実践的な技術です。AIに的確な指示を出すプロンプト技術や、異なるツールを連携させるAPIの知識など、具体的な操作スキルを指します。</p>
+                        <p><strong>③ Idea（仮説を立てる能力）</strong> 「この定型業務は、あのツールで自動化できるのでは？」といった、自社の課題とツールを結びつける着想力です。この発想力こそが、業務改善の起点となります。</p>
+                    </div>
+                    <div class="cta-button">
+                        <button class="btn btn-orange btn-large" onclick="startAssessment()">
+                            WEB診断へ進む
                         </button>
                     </div>
                 </div>
