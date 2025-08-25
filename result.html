@@ -137,6 +137,7 @@
                     
                     const apiResult = await API.getResult(userData.session_id);
                     console.log('API結果取得成功:', apiResult);
+                    console.log('API category_scores:', apiResult.category_scores);
                     
                     // API結果を使用
                     resultData.totalScore = apiResult.total_score;
@@ -554,17 +555,20 @@
                 return;
             }
             
-            // レーダーチャート用のデータ準備
+            // レーダーチャート用のデータ準備（絶対値表示：各軸最大12点）
             let labels = Object.keys(resultData.categoryScores);
             let data = labels.map(category => {
                 const score = resultData.categoryScores[category];
-                // 実際のスコア値を使用（0-100スケールに正規化）
+                console.log(`カテゴリ ${category}:`, score, typeof score);
+                // 絶対値を直接使用（0-12点）
+                let finalValue;
                 if (typeof score === 'object') {
-                    // 最大値を4として正規化（通常は質問ごとに1-4点）
-                    return Math.min(100, (score.average / 4) * 100);
+                    finalValue = Math.min(12, score.average || score.total || 0);
                 } else {
-                    return Math.min(100, (score / 4) * 100);
+                    finalValue = Math.min(12, score || 0);
                 }
+                console.log(`${category} の最終値:`, finalValue);
+                return finalValue;
             });
             
             // レーダーチャート表示のため、最低3軸必要な場合のダミーデータ追加
@@ -581,7 +585,8 @@
             }
             
             console.log('チャートラベル（調整後）:', labels);
-            console.log('チャートデータ（調整後）:', data);
+            console.log('チャートデータ（絶対値）:', data);
+            console.log('元のカテゴリスコア:', resultData.categoryScores);
             
             new Chart(ctx, {
                 type: 'radar',
@@ -608,12 +613,15 @@
                                 display: true,
                                 color: '#ddd'
                             },
-                            suggestedMin: 0,
-                            suggestedMax: 100,
+                            min: 0,
+                            max: 12,
                             ticks: {
-                                stepSize: 20,
+                                stepSize: 3,
                                 font: {
                                     size: 12
+                                },
+                                callback: function(value) {
+                                    return value + '点';
                                 }
                             },
                             pointLabels: {
