@@ -1804,8 +1804,8 @@ h3 {
 }
 
 .service-cta-buttons .btn {
-    min-width: 200px;
-    padding: 12px 24px;
+    min-width: 280px; /* 横幅を大幅に拡大（200px→280px） */
+    padding: 14px 32px; /* パディングも拡大（12px 24px → 14px 32px） */
     font-size: var(--font-size-body);
     font-weight: var(--font-weight-medium);
     border-radius: var(--border-radius-small);
