@@ -1906,7 +1906,7 @@ h3 {
 .level-description {
     font-size: var(--font-size-body);
     line-height: 1.8;
-    color: var(--color-text-sub);
+    color: #000000;
 }
 
 .level-description p {
