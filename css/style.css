@@ -1864,6 +1864,13 @@ h3 {
     .service-introduction {
         padding: 40px 0; /* モバイルでも上下のパディングを維持 */
         margin: 20px 0;
+        /* モバイルでは全幅レイアウトを無効化 */
+        width: 100%;
+        left: auto;
+        right: auto;
+        margin-left: 0;
+        margin-right: 0;
+        position: static;
     }
     
     .service-container {
@@ -1876,6 +1883,8 @@ h3 {
         flex-direction: column;
         gap: 30px; /* より大きなギャップ */
         max-width: 100%; /* モバイルでは全幅 */
+        margin-left: 0; /* 左右マージンをリセット */
+        margin-right: 0; /* 左右マージンをリセット */
     }
     
     .service-text-column {
