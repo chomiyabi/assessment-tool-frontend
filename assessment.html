@@ -75,12 +75,20 @@
             answers: {}
         };
         
-        // 質問データ（APIから取得）
+        // 質問データ（スプレッドシートQuestionsシートの実際のデータ）
         let questionsData = [
             {
                 question_id: 'Q001',
                 category: '経営',
                 question_text: '自社の経営戦略に合わせたDX戦略を策定されていますか？ また、戦略は社内に公開、周知され、組織に認知されていますか？',
+                option_1: '策定していない。または周知されていない',
+                option_2: '公開、周知されているが、一部の組織しか認知していない',
+                option_3: '全組織に認知されており、一部の組織で取り組みが始めている',
+                option_4: '全社員に認知されており、部門横断で取り組んでいる',
+                option_1_score: 1,
+                option_2_score: 2,
+                option_3_score: 3,
+                option_4_score: 4,
                 options: [
                     { text: '策定していない。または周知されていない', score: 1 },
                     { text: '公開、周知されているが、一部の組織しか認知していない', score: 2 },
@@ -92,6 +100,14 @@
                 question_id: 'Q002',
                 category: '経営',
                 question_text: '将来におけるディスラプションに対する危機感を社内で共有できていますか？',
+                option_1: '危機感がない。または共有できていない',
+                option_2: '漠然として危機感を共有している',
+                option_3: '具体的な危機について役員間で話し合っている',
+                option_4: 'ディスラプションに対する影響を評価した上で、役員・社員と共有している',
+                option_1_score: 1,
+                option_2_score: 2,
+                option_3_score: 3,
+                option_4_score: 4,
                 options: [
                     { text: '危機感がない。または共有できていない', score: 1 },
                     { text: '漠然として危機感を共有している', score: 2 },
@@ -103,6 +119,14 @@
                 question_id: 'Q003',
                 category: '経営',
                 question_text: 'DX推進に対して予算が確保され、ビジネス貢献を評価する仕組みがありますか？',
+                option_1: '予算がない。または不十分で評価の仕組みもない',
+                option_2: '予算化及び仕組みが明確化され、一部の部門で実践されている',
+                option_3: '予算化及び仕組みが明確化され、全社的に実践されている',
+                option_4: '予算化及び仕組みが明確化され、全社的に継続的に改善しながら定着している',
+                option_1_score: 1,
+                option_2_score: 2,
+                option_3_score: 3,
+                option_4_score: 4,
                 options: [
                     { text: '予算がない。または不十分で評価の仕組みもない', score: 1 },
                     { text: '予算化及び仕組みが明確化され、一部の部門で実践されている', score: 2 },
@@ -114,6 +138,14 @@
                 question_id: 'Q004',
                 category: '人事',
                 question_text: 'デジタル人材の採用・育成に取り組んでいますか？',
+                option_1: '取り組んでいない',
+                option_2: '一部で取り組みを開始している',
+                option_3: '計画的に採用・育成を進めている',
+                option_4: '継続的な採用・育成体制が確立されている',
+                option_1_score: 1,
+                option_2_score: 2,
+                option_3_score: 3,
+                option_4_score: 4,
                 options: [
                     { text: '取り組んでいない', score: 1 },
                     { text: '一部で取り組みを開始している', score: 2 },
@@ -125,22 +157,19 @@
                 question_id: 'Q005',
                 category: 'マーケティング',
                 question_text: '顧客データを活用したマーケティング施策を実施していますか？',
+                option_1: '実施していない',
+                option_2: '一部のデータを活用している',
+                option_3: '複数のデータソースを統合して活用している',
+                option_4: 'AIを活用した高度な分析・予測を行っている',
+                option_1_score: 1,
+                option_2_score: 2,
+                option_3_score: 3,
+                option_4_score: 4,
                 options: [
                     { text: '実施していない', score: 1 },
                     { text: '一部のデータを活用している', score: 2 },
                     { text: '複数のデータソースを統合して活用している', score: 3 },
                     { text: 'AIを活用した高度な分析・予測を行っている', score: 4 }
-                ]
-            },
-            {
-                question_id: 'Q009',
-                category: 'Others',
-                question_text: 'その他の業務領域においてデジタル技術の活用を進めていますか？',
-                options: [
-                    { text: '全く活用していない', score: 1 },
-                    { text: '一部の業務で活用を検討している', score: 2 },
-                    { text: '複数の業務で活用を開始している', score: 3 },
-                    { text: '全社的に積極的に活用している', score: 4 }
                 ]
             }
         ];

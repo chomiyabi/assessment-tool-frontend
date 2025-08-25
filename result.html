@@ -276,31 +276,36 @@
         async function calculateResultsFallback(answers) {
             console.warn('フォールバック計算を使用します');
             
-            // サンプル質問データ（P-04と同じ構造）
+            // サンプル質問データ（スプレッドシートと同じ構造）
             const sampleQuestions = [
                 {
                     question_id: 'Q001',
                     category: '経営',
+                    question_text: '自社の経営戦略に合わせたDX戦略を策定されていますか？ また、戦略は社内に公開、周知され、組織に認知されていますか？',
                     option_1_score: 1, option_2_score: 2, option_3_score: 3, option_4_score: 4
                 },
                 {
                     question_id: 'Q002',
                     category: '経営',
+                    question_text: '将来におけるディスラプションに対する危機感を社内で共有できていますか？',
                     option_1_score: 1, option_2_score: 2, option_3_score: 3, option_4_score: 4
                 },
                 {
                     question_id: 'Q003',
                     category: '経営',
+                    question_text: 'DX推進に対して予算が確保され、ビジネス貢献を評価する仕組みがありますか？',
                     option_1_score: 1, option_2_score: 2, option_3_score: 3, option_4_score: 4
                 },
                 {
                     question_id: 'Q004',
                     category: '人事',
+                    question_text: 'デジタル人材の採用・育成に取り組んでいますか？',
                     option_1_score: 1, option_2_score: 2, option_3_score: 3, option_4_score: 4
                 },
                 {
                     question_id: 'Q005',
                     category: 'マーケティング',
+                    question_text: '顧客データを活用したマーケティング施策を実施していますか？',
                     option_1_score: 1, option_2_score: 2, option_3_score: 3, option_4_score: 4
                 }
             ];
@@ -737,6 +742,63 @@
             URL.revokeObjectURL(url);
             
             Common.ui.showAlert('診断結果をダウンロードしました', 'success');
+        }
+        
+        // スコア計算のデバッグ関数
+        async function debugScoreCalculation(testAnswers) {
+            console.log('🔍 === スコア計算デバッグ開始 ===');
+            console.log('テスト用回答データ:', testAnswers);
+            
+            try {
+                // APIから質問データを取得してテスト
+                console.log('1. API経由でのスコア計算テスト:');
+                await calculateResults(testAnswers);
+                
+                console.log('計算結果:');
+                console.log('- 総合スコア:', resultData.totalScore);
+                console.log('- カテゴリスコア:', resultData.categoryScores);
+                
+                // 各質問の詳細なスコア計算を確認
+                const questionData = await API.getQuestions();
+                const questions = questionData.questions;
+                
+                let totalScoreCheck = 0;
+                console.log('\n2. 各質問のスコア詳細:');
+                questions.forEach(question => {
+                    const answerIndex = testAnswers[question.question_id];
+                    if (answerIndex !== null && answerIndex !== undefined && answerIndex >= 0) {
+                        let score = 0;
+                        switch(answerIndex) {
+                            case 0: score = question.option_1_score || 0; break;
+                            case 1: score = question.option_2_score || 0; break;
+                            case 2: score = question.option_3_score || 0; break;
+                            case 3: score = question.option_4_score || 0; break;
+                        }
+                        totalScoreCheck += score;
+                        console.log(`- ${question.question_id}: 回答${answerIndex + 1} → ${score}点`);
+                    }
+                });
+                
+                console.log('\n3. 検算結果:');
+                console.log('- 手動計算合計:', totalScoreCheck);
+                console.log('- システム計算:', resultData.totalScore);
+                console.log('- 一致:', totalScoreCheck === resultData.totalScore ? '✅' : '❌');
+                
+                // レベル判定確認
+                const levelInfo = determineMaturityLevel(resultData.totalScore);
+                console.log('\n4. レベル判定:');
+                console.log(`- スコア ${resultData.totalScore} → ${levelInfo.name}`);
+                
+                displayResults();
+                
+            } catch (error) {
+                console.error('デバッグ計算エラー:', error);
+                console.log('フォールバック計算でテスト:');
+                await calculateResultsFallback(testAnswers);
+                displayResults();
+            }
+            
+            console.log('🔍 === スコア計算デバッグ完了 ===');
         }
         
         // 診断をやり直す（Step 7改良版）
