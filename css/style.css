@@ -1766,8 +1766,8 @@ h3 {
     padding: 0 var(--content-padding);
 }
 
-.service-title {
-    font-size: calc(var(--font-size-h1) + 8px); /* より大きなフォントサイズ（42px） */
+.service-introduction .service-title {
+    font-size: calc(var(--font-size-h1) + 8px) !important; /* より大きなフォントサイズ（42px） */
     color: var(--color-header);
     margin-bottom: 30px;
     text-align: center;
@@ -1833,7 +1833,7 @@ h3 {
 }
 
 .service-image-column {
-    flex: 0 0 500px; /* より大きな固定幅（500px） */
+    flex: 0 0 700px; /* さらに大きな固定幅（700px） */
 }
 
 .service-hero-image {
@@ -1889,8 +1889,8 @@ h3 {
         min-width: auto;
     }
     
-    .service-title {
-        font-size: calc(var(--font-size-h2) + 4px); /* モバイルでも大きめ（30px） */
+    .service-introduction .service-title {
+        font-size: calc(var(--font-size-h2) + 4px) !important; /* モバイルでも大きめ（30px） */
     }
     
     .service-hero-text {
@@ -1917,8 +1917,8 @@ h3 {
         padding: 0 15px; /* より小さな横パディング */
     }
     
-    .service-title {
-        font-size: var(--font-size-h2); /* 小さなモバイルでの調整 */
+    .service-introduction .service-title {
+        font-size: var(--font-size-h2) !important; /* 小さなモバイルでの調整 */
     }
     
     .service-hero-text {
@@ -2082,39 +2082,6 @@ h3 {
         justify-content: center;
     }
     
-    /* サービス紹介エリアの追加モバイル最適化 */
-    .service-introduction {
-        padding: 15px;
-        margin: 15px 0;
-        border-radius: 6px;
-    }
-    
-    .service-title {
-        font-size: var(--font-size-h2);
-        margin-bottom: 15px;
-    }
-    
-    .service-description {
-        font-size: var(--font-size-small);
-        line-height: 1.6;
-        margin-bottom: 20px;
-    }
-    
-    .service-description p {
-        margin-bottom: 12px;
-    }
-    
-    .service-cta-buttons {
-        flex-direction: column;
-        gap: 12px;
-    }
-    
-    .service-cta-buttons .btn {
-        width: 100%;
-        min-width: auto;
-        padding: 14px 20px;
-        font-size: var(--font-size-small);
-    }
     
     /* ナビゲーションエリアの追加モバイル最適化 */
     .navigation-section {
