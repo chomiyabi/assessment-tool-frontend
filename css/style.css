@@ -2021,7 +2021,7 @@ h3 {
 
 /* ===== 診断結果レベル表示エリア (Step 2-4 Mobile対応) ===== */
 .result-summary-section {
-    margin: 40px 0; /* 上下のマージンを増やして中央配置 */
+    margin: 20px 0 50px 0; /* 上部マージンを減らし、下部マージンを増やして上に配置 */
 }
 
 .result-title {
@@ -2066,7 +2066,7 @@ h3 {
 @media (max-width: 767px) {
     /* 診断結果エリアのモバイル最適化 */
     .result-summary-section {
-        margin: 30px 0; /* モバイルでも上下マージンを増やして中央配置 */
+        margin: 15px 0 35px 0; /* モバイルでも上部を減らし下部を増やして上に配置 */
         padding: 0 10px;
     }
     
