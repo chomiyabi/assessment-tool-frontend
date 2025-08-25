@@ -131,7 +131,7 @@
                 console.warn('診断データが見つかりません。デモ用サンプルデータを使用します。');
                 // デモ用：サンプルデータで処理を継続（本番では削除推奨）
                 const sampleAnswers = { Q001: 2, Q002: 3, Q003: 1, Q004: 2, Q005: 3 };
-                calculateResults(sampleAnswers);
+                await calculateResults(sampleAnswers);
                 displayResults();
                 return;
             }
@@ -181,54 +181,127 @@
                     LoadingHelper.hide();
                     console.error('API結果取得エラー:', error);
                     // エラー時はローカル計算
-                    calculateResults(assessmentAnswers);
+                    await calculateResults(assessmentAnswers);
                     displayResults();
                 }
             } else {
                 // セッションIDがない場合はローカル計算
-                calculateResults(assessmentAnswers);
+                await calculateResults(assessmentAnswers);
                 displayResults();
             }
         });
         
         // 結果計算
-        function calculateResults(answers) {
+        async function calculateResults(answers) {
+            try {
+                // APIから正確な質問データを取得
+                const questionData = await API.getQuestions();
+                const questions = questionData.questions;
+                
+                if (!questions || questions.length === 0) {
+                    throw new Error('質問データの取得に失敗しました');
+                }
+                
+                resultData.answers = answers;
+                resultData.categoryScores = {};
+                
+                // カテゴリ別スコア計算（実際のスプレッドシートデータを使用）
+                questions.forEach(question => {
+                    const answerIndex = answers[question.question_id];
+                    if (answerIndex !== null && answerIndex !== undefined && answerIndex >= 0) {
+                        // スプレッドシートの実際のスコア値を使用
+                        let score = 0;
+                        switch(answerIndex) {
+                            case 0:
+                                score = question.option_1_score || 0;
+                                break;
+                            case 1:
+                                score = question.option_2_score || 0;
+                                break;
+                            case 2:
+                                score = question.option_3_score || 0;
+                                break;
+                            case 3:
+                                score = question.option_4_score || 0;
+                                break;
+                            default:
+                                score = 0;
+                        }
+                        
+                        const category = question.category;
+                        
+                        if (!resultData.categoryScores[category]) {
+                            resultData.categoryScores[category] = {
+                                total: 0,
+                                count: 0,
+                                questions: []
+                            };
+                        }
+                        
+                        resultData.categoryScores[category].total += score;
+                        resultData.categoryScores[category].count += 1;
+                        resultData.categoryScores[category].questions.push({
+                            questionId: question.question_id,
+                            score: score
+                        });
+                    }
+                });
+                
+                // 各カテゴリの平均スコア計算（実際のスコア値をそのまま使用）
+                Object.keys(resultData.categoryScores).forEach(category => {
+                    const data = resultData.categoryScores[category];
+                    data.average = data.total / data.count;
+                });
+                
+                // 総合スコア計算（全スコアの合計）
+                let totalScore = 0;
+                Object.values(resultData.categoryScores).forEach(categoryData => {
+                    totalScore += categoryData.total;
+                });
+                resultData.totalScore = totalScore;
+                
+                console.log('スコア計算完了:', {
+                    totalScore: resultData.totalScore,
+                    categoryScores: resultData.categoryScores
+                });
+                
+            } catch (error) {
+                console.error('スコア計算エラー:', error);
+                // フォールバック：固定値を使用
+                await calculateResultsFallback(answers);
+            }
+        }
+        
+        // フォールバック用計算関数（API失敗時）
+        async function calculateResultsFallback(answers) {
+            console.warn('フォールバック計算を使用します');
+            
             // サンプル質問データ（P-04と同じ構造）
             const sampleQuestions = [
                 {
                     question_id: 'Q001',
                     category: '経営',
-                    options: [
-                        { score: 1 }, { score: 2 }, { score: 3 }, { score: 4 }
-                    ]
+                    option_1_score: 1, option_2_score: 2, option_3_score: 3, option_4_score: 4
                 },
                 {
                     question_id: 'Q002',
                     category: '経営',
-                    options: [
-                        { score: 1 }, { score: 2 }, { score: 3 }, { score: 4 }
-                    ]
+                    option_1_score: 1, option_2_score: 2, option_3_score: 3, option_4_score: 4
                 },
                 {
                     question_id: 'Q003',
                     category: '経営',
-                    options: [
-                        { score: 1 }, { score: 2 }, { score: 3 }, { score: 4 }
-                    ]
+                    option_1_score: 1, option_2_score: 2, option_3_score: 3, option_4_score: 4
                 },
                 {
                     question_id: 'Q004',
                     category: '人事',
-                    options: [
-                        { score: 1 }, { score: 2 }, { score: 3 }, { score: 4 }
-                    ]
+                    option_1_score: 1, option_2_score: 2, option_3_score: 3, option_4_score: 4
                 },
                 {
                     question_id: 'Q005',
                     category: 'マーケティング',
-                    options: [
-                        { score: 1 }, { score: 2 }, { score: 3 }, { score: 4 }
-                    ]
+                    option_1_score: 1, option_2_score: 2, option_3_score: 3, option_4_score: 4
                 }
             ];
             
@@ -238,8 +311,25 @@
             // カテゴリ別スコア計算
             sampleQuestions.forEach(question => {
                 const answerIndex = answers[question.question_id];
-                if (answerIndex !== null && answerIndex !== undefined) {
-                    const score = question.options[answerIndex].score;
+                if (answerIndex !== null && answerIndex !== undefined && answerIndex >= 0) {
+                    let score = 0;
+                    switch(answerIndex) {
+                        case 0:
+                            score = question.option_1_score;
+                            break;
+                        case 1:
+                            score = question.option_2_score;
+                            break;
+                        case 2:
+                            score = question.option_3_score;
+                            break;
+                        case 3:
+                            score = question.option_4_score;
+                            break;
+                        default:
+                            score = 0;
+                    }
+                    
                     const category = question.category;
                     
                     if (!resultData.categoryScores[category]) {
@@ -259,15 +349,18 @@
                 }
             });
             
-            // 各カテゴリの平均スコア計算（0-100スケール）
+            // 各カテゴリの平均スコア計算
             Object.keys(resultData.categoryScores).forEach(category => {
                 const data = resultData.categoryScores[category];
-                data.average = (data.total / data.count) * 25; // 4点満点を100点に変換
+                data.average = data.total / data.count;
             });
             
-            // 総合スコア計算
-            const categoryAverages = Object.values(resultData.categoryScores).map(data => data.average);
-            resultData.totalScore = Math.round(categoryAverages.reduce((sum, avg) => sum + avg, 0) / categoryAverages.length);
+            // 総合スコア計算（全スコアの合計）
+            let totalScore = 0;
+            Object.values(resultData.categoryScores).forEach(categoryData => {
+                totalScore += categoryData.total;
+            });
+            resultData.totalScore = totalScore;
         }
         
         // 結果表示
@@ -359,11 +452,13 @@
         }
         */
         
-        // レベル判定ロジック
+        // レベル判定ロジック（スプレッドシートのスコア値に基づく）
         function determineMaturityLevel(totalScore) {
-            if (totalScore <= 11) return { level: 1, name: '業務改善 黎明期' };
-            if (totalScore <= 23) return { level: 2, name: '業務改善 試行期' };
-            if (totalScore <= 32) return { level: 3, name: '業務改善 展開期' };
+            // 実際のスコア範囲に基づいたレベル判定
+            // 5問×最大4点 = 最大20点を想定（スプレッドシートの実際の値による）
+            if (totalScore <= 8) return { level: 1, name: '業務改善 黎明期' };
+            if (totalScore <= 13) return { level: 2, name: '業務改善 試行期' };
+            if (totalScore <= 17) return { level: 3, name: '業務改善 展開期' };
             return { level: 4, name: '業務改善 先進期' };
         }
         
@@ -395,16 +490,16 @@
             return `貴社のAI活用スコアは「${totalScore}」、業務改善ポテンシャルは「${levelName}」となります。`;
         }
         
-        // テスト関数（Step 3確認用）
+        // テスト関数（更新されたスコア範囲用）
         function testLevelLogic() {
             console.log('=== レベル判定テスト開始 ===');
             
-            // 各レベルのテストケース
+            // 各レベルのテストケース（更新されたスコア範囲）
             const testCases = [
                 { score: 5, expected: 'レベル1' },
-                { score: 15, expected: 'レベル2' }, 
-                { score: 28, expected: 'レベル3' },
-                { score: 35, expected: 'レベル4' }
+                { score: 10, expected: 'レベル2' }, 
+                { score: 15, expected: 'レベル3' },
+                { score: 18, expected: 'レベル4' }
             ];
             
             testCases.forEach(testCase => {
@@ -421,16 +516,16 @@
             console.log('=== レベル判定テスト完了 ===');
         }
         
-        // Step 9: 統合テスト用関数
+        // Step 9: 統合テスト用関数（更新されたスコア範囲）
         function runIntegrationTests() {
             console.log('🧪 === 統合テスト開始 ===');
             
-            // Test Case 1-4: 各レベルでの表示テスト
+            // Test Case 1-4: 各レベルでの表示テスト（更新されたスコア範囲）
             const testCases = [
                 { level: 1, score: 5, name: 'レベル1（業務改善 黎明期）' },
-                { level: 2, score: 15, name: 'レベル2（業務改善 試行期）' },
-                { level: 3, score: 28, name: 'レベル3（業務改善 展開期）' },
-                { level: 4, score: 35, name: 'レベル4（業務改善 先進期）' }
+                { level: 2, score: 10, name: 'レベル2（業務改善 試行期）' },
+                { level: 3, score: 15, name: 'レベル3（業務改善 展開期）' },
+                { level: 4, score: 18, name: 'レベル4（業務改善 先進期）' }
             ];
             
             testCases.forEach((testCase, index) => {
@@ -485,9 +580,9 @@
         function testErrorCases() {
             console.log('❌ === エラーケーステスト開始 ===');
             
-            // 無効なスコアでのテスト
+            // 無効なスコアでのテスト（更新されたスコア範囲）
             console.log('🔍 境界値テスト');
-            [-1, 0, 11, 12, 23, 24, 32, 33, 36, 100].forEach(score => {
+            [-1, 0, 8, 9, 13, 14, 17, 18, 20, 25].forEach(score => {
                 const levelInfo = determineMaturityLevel(score);
                 console.log(`スコア${score}: レベル${levelInfo.level} - ${levelInfo.name}`);
             });
@@ -531,7 +626,13 @@
             let labels = Object.keys(resultData.categoryScores);
             let data = labels.map(category => {
                 const score = resultData.categoryScores[category];
-                return typeof score === 'object' ? score.average : score;
+                // 実際のスコア値を使用（0-100スケールに正規化）
+                if (typeof score === 'object') {
+                    // 最大値を4として正規化（通常は質問ごとに1-4点）
+                    return Math.min(100, (score.average / 4) * 100);
+                } else {
+                    return Math.min(100, (score / 4) * 100);
+                }
             });
             
             // レーダーチャート表示のため、最低3軸必要な場合のダミーデータ追加
