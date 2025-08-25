@@ -27,9 +27,8 @@ const API_CONFIG = {
 const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbwooCJeciyJfmWZ9BhN8gzsXsp6kYmd70R7_X8ghBj3tFMOKkn4cccG3ai_vjrz_ng1gw/exec';
 
-API_CONFIG.BASE_URL = API_CONFIG.IS_PRODUCTION 
-    ? '/.netlify/functions/gas-proxy'
-    : GAS_URL;  // ローカルでも直接アクセスを試みる
+// 元の設定：本番環境でも直接GAS URLを使用
+API_CONFIG.BASE_URL = GAS_URL;
 
 /**
  * Assessment Tool API クライアントクラス
@@ -43,40 +42,21 @@ class AssessmentAPI {
     }
     
     /**
-     * HTTPリクエストを実行（JSONP方式でCORS回避）
+     * HTTPリクエストを実行
      * @private
      */
     async makeRequest(path, params = {}) {
-        let url;
+        const urlParams = new URLSearchParams();
+        urlParams.append('path', path);
         
-        if (API_CONFIG.IS_PRODUCTION) {
-            // 本番環境: Vercel Functions経由でCORS解決
-            const urlParams = new URLSearchParams();
-            urlParams.append('path', path);
-            
-            // パラメータを追加
-            Object.keys(params).forEach(key => {
-                if (params[key] !== null && params[key] !== undefined) {
-                    urlParams.append(key, typeof params[key] === 'object' ? JSON.stringify(params[key]) : params[key]);
-                }
-            });
-            
-            url = `${this.baseUrl}?${urlParams.toString()}`;
-            
-        } else {
-            // 開発環境: 直接GAS APIを呼び出し
-            const urlParams = new URLSearchParams();
-            urlParams.append('path', path);
-            
-            // パラメータを追加
-            Object.keys(params).forEach(key => {
-                if (params[key] !== null && params[key] !== undefined) {
-                    urlParams.append(key, typeof params[key] === 'object' ? JSON.stringify(params[key]) : params[key]);
-                }
-            });
-            
-            url = `${this.baseUrl}?${urlParams.toString()}`;
-        }
+        // パラメータを追加
+        Object.keys(params).forEach(key => {
+            if (params[key] !== null && params[key] !== undefined) {
+                urlParams.append(key, typeof params[key] === 'object' ? JSON.stringify(params[key]) : params[key]);
+            }
+        });
+        
+        const url = `${this.baseUrl}?${urlParams.toString()}`;
         
         console.log(`[API] Hostname: ${window.location.hostname}`);
         console.log(`[API] Protocol: ${window.location.protocol}`);
