@@ -19,7 +19,7 @@
     <!-- サブヘッダー -->
     <section class="sub-header">
         <div class="container">
-            <h1 class="sub-header-title">DX Web診断結果</h1>
+            <h1 class="sub-header-title">業務改善ポテンシャル診断結果</h1>
         </div>
     </section>
     
@@ -28,185 +28,61 @@
         <div class="container">
             <div class="result-content">
                 
-                <!-- 診断完了メッセージ -->
-                <div class="result-summary">
-                    <h2 class="result-title">診断が完了しました</h2>
-                    <p class="result-description">
-                        貴社の現在のDX活用度について、各領域における現状と今後の取り組みの方向性をご確認いただけます。
-                        今後のDX推進の参考として、是非ご活用ください。
+                <!-- 診断結果サマリー -->
+                <div class="result-summary-section">
+                    <p class="result-summary-text" id="resultSummary">
+                        <!-- 動的に生成される文言: 貴社のAI活用スコアは「XXX」、業務改善ポテンシャルは「YYY」となります。 -->
+                        診断結果を計算中...
                     </p>
                 </div>
                 
-                <!-- DX活用度レーダーチャート -->
+                <!-- 業務改善ポテンシャル レーダーチャート -->
                 <div class="result-chart-section">
-                    <h3 class="chart-title">DX活用度の診断結果</h3>
+                    <h3 class="chart-title">業務改善ポテンシャルの診断結果</h3>
                     <div class="chart-container">
                         <div class="chart-wrapper">
-                            <canvas id="radarChart" width="400" height="400"></canvas>
-                        </div>
-                        <div class="chart-legend">
-                            <div class="legend-item">
-                                <span class="legend-color" style="background: #4A90E2;"></span>
-                                <span class="legend-text">現在のスコア</span>
-                            </div>
+                            <canvas id="radarChart"></canvas>
                         </div>
                     </div>
                 </div>
                 
-                <!-- スコア詳細 -->
-                <div class="score-details">
-                    <h3 class="score-title">各領域のスコア</h3>
-                    <div class="score-cards" id="scoreCards">
-                        <!-- スコアカードは動的に生成 -->
+                <!-- レベル詳細解説 -->
+                <div class="level-detail-section">
+                    <div class="level-description" id="levelDescription">
+                        <!-- 動的に生成される詳細解説 -->
+                        <p>診断レベルの詳細解説を読み込み中...</p>
                     </div>
                 </div>
                 
-                <!-- 企業家での建設による分析 -->
-                <div class="analysis-section">
-                    <h3 class="analysis-title">企業家での建設による分析</h3>
-                    <div class="analysis-content">
-                        <div class="analysis-text">
-                            <h4 class="framework-title">Assessment Tool診断フレームワーク - 9つについて</h4>
-                            <p class="framework-description">
-                                企業のDX推進を多面的な視点から評価する診断フレームワーク。
-                                DX戦略・組織・人材開発等を通じて貴社のDXReadinessを
-                                フレームワークをベースとし、総合的なDXReadinessを数値化し可視化することで
-                                今後のDX推進方向性を明確にします。
-                            </p>
-                            <ul class="framework-features">
-                                <li>Customer Experience</li>
-                                <li>Employee Experience</li>
-                                <li>データマネジメント</li>
-                                <li>Management Excellence</li>
-                                <li>Digital Innovation</li>
-                            </ul>
-                        </div>
-                        <div class="analysis-diagram">
-                            <div class="dx-framework-diagram">
-                                <div class="center-circle">
-                                    <span>DX</span>
-                                </div>
-                                <div class="framework-items">
-                                    <div class="framework-item cx">CX</div>
-                                    <div class="framework-item ex">EX</div>
-                                    <div class="framework-item mx">MX</div>
-                                    <div class="framework-item dx-inner">DX</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 総合スコア -->
-                <div class="total-score-section">
-                    <h3 class="total-score-title">DXに基づくスコア</h3>
-                    <div class="total-score-display">
-                        <div class="score-circle">
-                            <span class="score-number" id="totalScore">75</span>
-                            <span class="score-label">/ 100</span>
-                        </div>
-                        <div class="score-description">
-                            <h4>Purpose Driven Business DX</h4>
-                            <p>貴社のDX成熟度を多角的に評価した結果です。今後のDX推進の参考としてご活用ください。</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- おすすめのオファリング -->
-                <div class="offerings-section">
-                    <h3 class="offerings-title">貴社におすすめのAssessment Toolのオファリング</h3>
-                    <div class="offerings-grid">
-                        <div class="offering-card">
-                            <h4 class="offering-title">エンタープライズサーチ</h4>
-                            <div class="offering-content">
-                                <p class="offering-description">
-                                    企業内の多様なデータソースから、知りたい情報を簡単に検索できる
-                                    統合検索ソリューションです。AI技術により、より精度の高い検索結果を提供します。
-                                </p>
-                                <ul class="offering-features">
-                                    <li>AI・自然言語処理による高精度検索</li>
-                                    <li>多様なデータソースへの接続対応</li>
-                                    <li>セキュアな検索環境の提供</li>
-                                    <li>PC・モバイル両対応のUI提供</li>
-                                </ul>
-                                <button class="btn btn-primary offering-btn">詳しく見る</button>
-                            </div>
-                        </div>
+                <!-- Haru Automationサービス紹介エリア -->
+                <div class="service-introduction">
+                    <h3 class="service-title">Haru Automation のご紹介</h3>
+                    <div class="service-description">
+                        <p><strong>生成AIとあらゆるツールを連携させ、"即成果が出る"自動化を実現します。</strong></p>
                         
-                        <div class="offering-card">
-                            <h4 class="offering-title">デジタルアシスタント</h4>
-                            <div class="offering-content">
-                                <p class="offering-description">
-                                    生成AIの力でビジネスプロセスを効率化。チャットボットや
-                                    自動応答システムにより、顧客対応や社内問い合わせを自動化します。
-                                </p>
-                                <ul class="offering-features">
-                                    <li>生成AI活用による自動応答</li>
-                                    <li>既存システムとの連携</li>
-                                    <li>多言語対応</li>
-                                    <li>学習機能による精度向上</li>
-                                </ul>
-                                <button class="btn btn-primary offering-btn">詳しく見る</button>
-                            </div>
-                        </div>
+                        <p>Haru Automationは、ChatGPTやGeminiなどの生成AIと、ZapierやDify、PowerAutomateといった各種効率化ツールを最適に組み合わせ、お客様専用の業務改善フローを構築します。</p>
                         
-                        <div class="offering-card">
-                            <h4 class="offering-title">データアナリティクス</h4>
-                            <div class="offering-content">
-                                <p class="offering-description">
-                                    蓄積されたデータから価値を創出し、ビジネスの意思決定を支援する
-                                    包括的なデータ分析ソリューションです。
-                                </p>
-                                <ul class="offering-features">
-                                    <li>リアルタイム分析・可視化</li>
-                                    <li>機械学習による予測分析</li>
-                                    <li>カスタムダッシュボード作成</li>
-                                    <li>データガバナンス対応</li>
-                                </ul>
-                                <button class="btn btn-primary offering-btn">詳しく見る</button>
-                            </div>
-                        </div>
+                        <p>AI単体では実現できなかった、複雑な業務の自動化や品質向上まで、一気通貫でご支援。「面倒」をなくし、企業のコア業務に集中できる環境を創り出します。</p>
                         
-                        <div class="offering-card">
-                            <h4 class="offering-title">プロセスマイニング</h4>
-                            <div class="offering-content">
-                                <p class="offering-description">
-                                    業務プロセスを可視化・分析し、効率化の機会を特定します。
-                                    データドリブンなプロセス改善を実現します。
-                                </p>
-                                <ul class="offering-features">
-                                    <li>業務プロセスの自動可視化</li>
-                                    <li>ボトルネック特定・分析</li>
-                                    <li>改善提案の自動生成</li>
-                                    <li>ROI測定・効果検証</li>
-                                </ul>
-                                <button class="btn btn-primary offering-btn">詳しく見る</button>
-                            </div>
-                        </div>
+                        <p>高額な初期投資は不要です。まずは<strong>29,800円の「お試しプラン」</strong>で、業務の一つを自動化することによるインパクトを体感してください。効果にご納得いただけた上で、本格的なご支援へとステップアップが可能です。</p>
+                        
+                        <p>導入後の運用も<strong>「丸投げOK」</strong>のサポート体制で、安心してご利用いただけます。</p>
+                    </div>
+                    <div class="service-cta-buttons">
+                        <button class="btn btn-primary" onclick="openServiceDetail()">
+                            サービス詳細を見る
+                        </button>
+                        <button class="btn btn-secondary" onclick="openContactForm()">
+                            お問い合わせ
+                        </button>
                     </div>
                 </div>
-                
-                <!-- お問い合わせ -->
-                <div class="contact-section">
-                    <h3 class="contact-title">お問い合わせ</h3>
-                    <div class="contact-content">
-                        <p class="contact-description">
-                            Assessment Toolについてご質問・ご相談がございましたら、
-                            お気軽にお問い合わせください。
-                        </p>
-                        <div class="contact-actions">
-                            <button class="btn btn-primary contact-btn" onclick="openContactForm()">
-                                お問い合わせフォームへ
-                            </button>
-                            <div class="contact-info">
-                                <button class="btn btn-secondary" onclick="downloadResults()">
-                                    診断結果をダウンロード
-                                </button>
-                                <button class="btn btn-secondary" onclick="restartAssessment()">
-                                    診断をやり直す
-                                </button>
-                            </div>
-                        </div>
+                <!-- ナビゲーションエリア -->
+                <div class="navigation-section">
+                    <div class="navigation-buttons">
+                        <button class="btn btn-outline" onclick="restartAssessment()">
+                            診断をやり直す
+                        </button>
                     </div>
                 </div>
             </div>
@@ -252,10 +128,11 @@
             const userData = Common.storage.get('userData');
             
             if (!assessmentAnswers || !userData) {
-                Common.ui.showAlert('診断データが見つかりません。最初からやり直してください。', 'error');
-                setTimeout(() => {
-                    Common.navigation.goToPage('index.html');
-                }, 3000);
+                console.warn('診断データが見つかりません。デモ用サンプルデータを使用します。');
+                // デモ用：サンプルデータで処理を継続（本番では削除推奨）
+                const sampleAnswers = { Q001: 2, Q002: 3, Q003: 1, Q004: 2, Q005: 3 };
+                calculateResults(sampleAnswers);
+                displayResults();
                 return;
             }
             
@@ -398,17 +275,59 @@
             console.log('結果表示開始');
             console.log('現在のresultData:', resultData);
             
-            // 総合スコア表示
-            document.getElementById('totalScore').textContent = resultData.totalScore;
+            // 総合スコア表示（削除済み）
+            // document.getElementById('totalScore').textContent = resultData.totalScore;
             
-            // スコアカード生成
-            generateScoreCards();
+            // 新規: レベル判定と表示
+            // 本番用：データがない場合のフォールバック
+            if (!resultData.totalScore && resultData.totalScore !== 0) {
+                console.warn('totalScoreが未設定のため、デフォルトスコアを使用します');
+                resultData.totalScore = 0; // デフォルトスコア（レベル1）
+            }
+            
+            const levelInfo = determineMaturityLevel(resultData.totalScore);
+            const summaryText = generateSummaryText(resultData.totalScore, levelInfo.name);
+            const descriptionText = getLevelDescription(levelInfo.level);
+            
+            console.log('レベル判定結果:', levelInfo);
+            console.log('サマリー文:', summaryText);
+            console.log('解説文:', descriptionText.substring(0, 100) + '...');
+            
+            // DOM更新
+            const summaryElement = document.getElementById('resultSummary');
+            const descriptionElement = document.getElementById('levelDescription');
+            
+            if (summaryElement) {
+                summaryElement.textContent = summaryText;
+            } else {
+                console.error('resultSummary要素が見つかりません');
+            }
+            
+            if (descriptionElement) {
+                // 複数段落に分割して表示
+                descriptionElement.innerHTML = '';
+                const paragraphs = descriptionText.split('\n\n');
+                paragraphs.forEach(paragraph => {
+                    if (paragraph.trim()) {
+                        const p = document.createElement('p');
+                        p.textContent = paragraph.trim();
+                        p.style.marginBottom = '16px';
+                        descriptionElement.appendChild(p);
+                    }
+                });
+            } else {
+                console.error('levelDescription要素が見つかりません');
+            }
+            
+            // スコアカード生成（削除済み）
+            // generateScoreCards();
             
             // レーダーチャート生成
             generateRadarChart();
         }
         
-        // スコアカード生成
+        // スコアカード生成（削除済み）
+        /*
         function generateScoreCards() {
             const container = document.getElementById('scoreCards');
             container.innerHTML = '';
@@ -437,6 +356,163 @@
                 `;
                 container.appendChild(card);
             });
+        }
+        */
+        
+        // レベル判定ロジック
+        function determineMaturityLevel(totalScore) {
+            if (totalScore <= 11) return { level: 1, name: '業務改善 黎明期' };
+            if (totalScore <= 23) return { level: 2, name: '業務改善 試行期' };
+            if (totalScore <= 32) return { level: 3, name: '業務改善 展開期' };
+            return { level: 4, name: '業務改善 先進期' };
+        }
+        
+        // レベル別解説文取得
+        function getLevelDescription(level) {
+            const descriptions = {
+                1: `AIやITツールの活用はまだ本格的に始まっていない、もしくは検討段階にあります。
+情報収集やツールの知識、具体的な活用アイデアが全体的に不足しており、個人の関心や努力に依存している状態です。見方を変えれば、これから大きく成長できる非常に高いポテンシャルを秘めていると言えます。
+
+まずは経営層を含め、AIやITツールがもたらす業務改善の可能性について共通認識を持つことが第一歩です。他社の成功事例を学ぶ、小規模なセミナーに参加するなど、情報収集から始めましょう。そして、特定の非効率な業務を一つ選び、ツールの試験的な導入を検討することをお勧めします。`,
+                
+                2: `AIやITツールへの関心は高く、一部の部署や意欲的な個人によってツールの導入や活用が始まっています。しかし、その取り組みはまだ限定的・散発的であり、全社的な動きには至っていません。小さな成功体験と、うまくいかなかった経験が混在している段階です。
+
+個別の成功事例を社内で共有し、横展開する仕組みを作りましょう。業務改善やDXを推進する担当者を正式に任命し、より体系的な情報収集やスキルアップの機会（研修など）を提供することが有効です。外部の専門家の知見も活用し、具体的な業務改善計画の策定に着手するのに最適なタイミングです。`,
+                
+                3: `複数の部署でAIやITツールの活用が定着し、業務改善の成功事例も増えています。DX推進の担当者やチームが存在し、組織的な取り組みとして活動が進んでいます。一方で、部署ごとに導入したツールが異なったり、部分的な最適化に留まっていたりと、全社的な戦略や連携にはまだ改善の余地がある状態です。
+
+部署ごとに最適化されている業務プロセスやツールを見直し、全社的な視点での標準化やデータ連携を推進する必要があります。専門部署が主導して全社的なDX戦略を策定・実行することで、より大きな成果が期待できます。外部サービスを活用し、高度なツール連携や業務自動化を実現するのも効果的です。`,
+                
+                4: `経営層の強いコミットメントのもと、全社的にAIやITツールが活用され、業務改善が文化として根付いています。データに基づいた意思決定が浸透し、継続的な改善サイクルが確立されています。市場の変化にも迅速に対応できる、非常に競争力の高い組織状態です。
+
+これまでの成功を継続しつつ、AIが自律的に業務を行う「AIエージェント」や、自社の業務に特化したAIモデルの開発（ファインチューニング）など、より先進的な技術の導入を検討しましょう。業界のリーダーとして、AIを活用した新たなビジネスモデルの創出や、サプライチェーン全体の変革を主導していくことが期待されます。`
+            };
+            return descriptions[level] || '該当するレベルの解説が見つかりません。';
+        }
+        
+        // サマリー文生成
+        function generateSummaryText(totalScore, levelName) {
+            return `貴社のAI活用スコアは「${totalScore}」、業務改善ポテンシャルは「${levelName}」となります。`;
+        }
+        
+        // テスト関数（Step 3確認用）
+        function testLevelLogic() {
+            console.log('=== レベル判定テスト開始 ===');
+            
+            // 各レベルのテストケース
+            const testCases = [
+                { score: 5, expected: 'レベル1' },
+                { score: 15, expected: 'レベル2' }, 
+                { score: 28, expected: 'レベル3' },
+                { score: 35, expected: 'レベル4' }
+            ];
+            
+            testCases.forEach(testCase => {
+                const result = determineMaturityLevel(testCase.score);
+                const summary = generateSummaryText(testCase.score, result.name);
+                const description = getLevelDescription(result.level);
+                
+                console.log(`\nスコア: ${testCase.score} (${testCase.expected})`);
+                console.log(`結果: レベル${result.level} - ${result.name}`);
+                console.log(`サマリー: ${summary}`);
+                console.log(`解説: ${description.substring(0, 100)}...`);
+            });
+            
+            console.log('=== レベル判定テスト完了 ===');
+        }
+        
+        // Step 9: 統合テスト用関数
+        function runIntegrationTests() {
+            console.log('🧪 === 統合テスト開始 ===');
+            
+            // Test Case 1-4: 各レベルでの表示テスト
+            const testCases = [
+                { level: 1, score: 5, name: 'レベル1（業務改善 黎明期）' },
+                { level: 2, score: 15, name: 'レベル2（業務改善 試行期）' },
+                { level: 3, score: 28, name: 'レベル3（業務改善 展開期）' },
+                { level: 4, score: 35, name: 'レベル4（業務改善 先進期）' }
+            ];
+            
+            testCases.forEach((testCase, index) => {
+                setTimeout(() => {
+                    console.log(`\n🔍 ${testCase.name}テスト開始`);
+                    
+                    // スコアを設定
+                    resultData.totalScore = testCase.score;
+                    
+                    // レベル判定実行
+                    const levelInfo = determineMaturityLevel(testCase.score);
+                    const summaryText = generateSummaryText(testCase.score, levelInfo.name);
+                    const descriptionText = getLevelDescription(levelInfo.level);
+                    
+                    // DOM更新
+                    const summaryElement = document.getElementById('resultSummary');
+                    const descriptionElement = document.getElementById('levelDescription');
+                    
+                    if (summaryElement) {
+                        summaryElement.textContent = summaryText;
+                    }
+                    
+                    if (descriptionElement) {
+                        descriptionElement.innerHTML = '';
+                        const paragraphs = descriptionText.split('\n\n');
+                        paragraphs.forEach(paragraph => {
+                            if (paragraph.trim()) {
+                                const p = document.createElement('p');
+                                p.textContent = paragraph.trim();
+                                p.style.marginBottom = '16px';
+                                descriptionElement.appendChild(p);
+                            }
+                        });
+                    }
+                    
+                    console.log(`✅ ${testCase.name}: 表示更新完了`);
+                    console.log(`   スコア: ${testCase.score}`);
+                    console.log(`   レベル: ${levelInfo.level} - ${levelInfo.name}`);
+                    
+                    if (index === testCases.length - 1) {
+                        setTimeout(() => {
+                            console.log('\n🎉 すべてのレベルテスト完了');
+                            console.log('📱 モバイル表示確認: F12 > デバイスツールバーでテスト');
+                            console.log('🖱️  ボタン動作確認: 各種ボタンをクリックしてテスト');
+                        }, 1000);
+                    }
+                }, index * 3000); // 3秒間隔で実行
+            });
+        }
+        
+        // エラーケーステスト
+        function testErrorCases() {
+            console.log('❌ === エラーケーステスト開始 ===');
+            
+            // 無効なスコアでのテスト
+            console.log('🔍 境界値テスト');
+            [-1, 0, 11, 12, 23, 24, 32, 33, 36, 100].forEach(score => {
+                const levelInfo = determineMaturityLevel(score);
+                console.log(`スコア${score}: レベル${levelInfo.level} - ${levelInfo.name}`);
+            });
+            
+            // DOM要素のエラーハンドリングテスト
+            console.log('🔍 DOM要素エラーハンドリングテスト');
+            const originalSummary = document.getElementById('resultSummary');
+            const originalDescription = document.getElementById('levelDescription');
+            
+            // 一時的に要素を無効化
+            if (originalSummary) originalSummary.id = 'temp-summary';
+            if (originalDescription) originalDescription.id = 'temp-description';
+            
+            try {
+                displayResults();
+                console.log('✅ DOM要素不在時のエラーハンドリング正常');
+            } catch (error) {
+                console.error('❌ DOM要素エラーハンドリング失敗:', error);
+            }
+            
+            // 要素を復元
+            if (originalSummary) originalSummary.id = 'resultSummary';
+            if (originalDescription) originalDescription.id = 'levelDescription';
+            
+            console.log('✅ エラーケーステスト完了');
         }
         
         // レーダーチャート生成
@@ -509,7 +585,7 @@
                             },
                             pointLabels: {
                                 font: {
-                                    size: 14,
+                                    size: 24,
                                     weight: 'bold'
                                 },
                                 color: '#333'
@@ -523,6 +599,11 @@
                     }
                 }
             });
+        }
+        
+        // サービス詳細を開く
+        function openServiceDetail() {
+            alert('Haru Automationサービス詳細ページは今後実装予定です。\n現在は概要をご覧いただけます。');
         }
         
         // お問い合わせフォーム開く
@@ -557,13 +638,35 @@
             Common.ui.showAlert('診断結果をダウンロードしました', 'success');
         }
         
-        // 診断をやり直す
+        // 診断をやり直す（Step 7改良版）
         function restartAssessment() {
-            if (confirm('診断を最初からやり直しますか？')) {
-                // ストレージをクリア
-                Common.storage.clear();
-                // トップページへ遷移
-                Common.navigation.goToPage('index.html');
+            if (confirm('診断を最初からやり直しますか？\n現在の結果は失われます。')) {
+                try {
+                    console.log('診断やり直し処理を開始します');
+                    
+                    // ストレージをクリア
+                    if (Common && Common.storage) {
+                        Common.storage.clear();
+                        console.log('ローカルストレージをクリアしました');
+                    } else {
+                        // フォールバック：直接localStorage操作
+                        localStorage.clear();
+                        sessionStorage.clear();
+                        console.log('ストレージを直接クリアしました');
+                    }
+                    
+                    // トップページへ遷移
+                    if (Common && Common.navigation) {
+                        Common.navigation.goToPage('index.html');
+                    } else {
+                        // フォールバック：直接遷移
+                        window.location.href = 'index.html';
+                    }
+                    
+                } catch (error) {
+                    console.error('診断やり直し処理でエラーが発生:', error);
+                    alert('エラーが発生しました。ページを手動でリロードしてください。');
+                }
             }
         }
     </script>
