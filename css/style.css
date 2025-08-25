@@ -1800,11 +1800,59 @@ h3 {
     box-shadow: var(--shadow-medium);
 }
 
+/* 2カラムレイアウト構造 */
+.service-content-wrapper {
+    display: flex;
+    align-items: flex-start;
+    gap: 40px;
+    margin-top: 20px;
+}
+
+.service-text-column {
+    flex: 1;
+    min-width: 0; /* Flexbox shrinking対策 */
+}
+
+.service-image-column {
+    flex: 0 0 400px; /* 400px固定幅 */
+}
+
+.service-hero-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    object-fit: cover;
+    background-color: #f8f9fa; /* 読み込み中の背景色 */
+}
+
+.service-hero-image:hover {
+    transform: scale(1.02);
+}
+
 /* レスポンシブ対応 */
 @media (max-width: 767px) {
     .service-introduction {
         padding: 20px;
         margin: 20px 0;
+    }
+    
+    /* 2カラムレイアウトのモバイル対応 */
+    .service-content-wrapper {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .service-image-column {
+        flex: none;
+        width: 100%;
+        order: -1; /* 画像を上部に配置 */
+    }
+    
+    .service-hero-image {
+        max-width: 100%;
+        height: auto;
     }
     
     .service-cta-buttons {
@@ -1819,6 +1867,22 @@ h3 {
     
     .service-title {
         font-size: var(--font-size-h2);
+    }
+}
+
+/* より小さなモバイルデバイス対応 */
+@media (max-width: 480px) {
+    .service-content-wrapper {
+        gap: 15px;
+    }
+    
+    .service-hero-image {
+        border-radius: 6px;
+    }
+    
+    .service-introduction {
+        padding: 15px;
+        margin: 15px 0;
     }
 }
 
