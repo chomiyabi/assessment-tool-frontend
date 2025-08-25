@@ -57,6 +57,16 @@ function doPost(e) {
 }
 
 /**
+ * HTTP OPTIONS リクエストハンドラー (Preflight対応)
+ */
+function doOptions(e) {
+  return createCORSResponse({
+    status: 'success',
+    message: 'CORS preflight OK'
+  });
+}
+
+/**
  * リクエスト処理のメインルーター
  */
 function handleRequest(method, e) {
@@ -619,6 +629,14 @@ function createCORSResponse(data) {
     .createTextOutput(JSON.stringify(data))
     .setMimeType(ContentService.MimeType.JSON);
     
+  // CORS ヘッダーを設定
+  output.setHeaders({
+    'Access-Control-Allow-Origin': 'https://haru-assessment.com',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Max-Age': '86400'
+  });
+    
   return output;
 }
 
@@ -632,9 +650,19 @@ function createErrorResponse(error) {
     timestamp: new Date().toISOString()
   };
   
-  return ContentService
+  const output = ContentService
     .createTextOutput(JSON.stringify(errorResponse))
     .setMimeType(ContentService.MimeType.JSON);
+    
+  // CORS ヘッダーを設定
+  output.setHeaders({
+    'Access-Control-Allow-Origin': 'https://haru-assessment.com',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Max-Age': '86400'
+  });
+    
+  return output;
 }
 
 // === CORS対応のGET版エンドポイント ===
