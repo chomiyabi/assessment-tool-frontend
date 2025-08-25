@@ -1901,13 +1901,16 @@ h3 {
         justify-content: center; /* モバイルでも中央揃え */
         align-items: center; /* モバイルでも垂直中央揃え */
         max-width: 100%;
+        padding: 0 10px; /* 左右に余白を追加して見切れを防止 */
     }
     
     .service-hero-image {
-        max-width: 100%;
-        width: 100%; /* モバイルでは固定サイズではなく100%幅 */
+        max-width: 95%; /* モバイルでは少し余裕を持たせる */
+        width: 95%; /* モバイルでは95%幅で確実に画面内に収める */
         height: auto;
         border-radius: 8px; /* モバイルでの角丸 */
+        margin: 0 auto; /* 中央揃え */
+        display: block; /* block要素として中央揃えを適用 */
     }
     
     .service-cta-buttons {
