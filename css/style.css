@@ -1868,6 +1868,7 @@ h3 {
     
     .service-container {
         padding: 0 20px; /* モバイルでの横パディング */
+        max-width: 100%; /* モバイルでは最大幅制限を解除 */
     }
     
     /* 2カラムレイアウトのモバイル対応 */
@@ -1879,6 +1880,8 @@ h3 {
     
     .service-text-column {
         max-width: 100%; /* モバイルでは最大幅制限を解除 */
+        min-width: auto; /* モバイルでは最小幅制限を解除 */
+        flex: none; /* モバイルではflex比率を無効化 */
     }
     
     .service-image-column {
@@ -1893,6 +1896,7 @@ h3 {
     
     .service-hero-image {
         max-width: 100%;
+        width: 100%; /* モバイルでは固定サイズではなく100%幅 */
         height: auto;
         border-radius: 8px; /* モバイルでの角丸 */
     }
