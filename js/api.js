@@ -22,11 +22,8 @@ const API_CONFIG = {
     RETRY_DELAY: 1000
 };
 
-// 本番環境のGAS URL
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbwooCJeciyJfmWZ9BhN8gzsXsp6kYmd70R7_X8ghBj3tFMOKkn4cccG3ai_vjrz_ng1gw/exec';
-
-// 本番環境設定
-API_CONFIG.BASE_URL = GAS_URL;
+// 本番環境：Netlify Functions経由でGASにアクセス（CORS回避）
+API_CONFIG.BASE_URL = '/.netlify/functions/api';
 
 /**
  * Assessment Tool API クライアントクラス
