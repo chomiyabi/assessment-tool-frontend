@@ -1831,21 +1831,22 @@ h3 {
 }
 
 .service-text-column {
-    flex: 2; /* テキストエリアを2倍の比率に */
+    flex: 1; /* テキストエリアの比率を1に変更 */
     min-width: 0; /* Flexbox shrinking対策 */
     max-width: 800px; /* 最大幅を設定して横長に */
 }
 
 .service-image-column {
-    flex: 1; /* 画像エリアは1の比率 */
+    flex: 1.5; /* 画像エリアをより大きな比率に（1.5倍） */
     max-width: 900px; /* 最大幅を大幅拡大（700px→900px） */
+    min-width: 500px; /* 最小幅を設定して確実に大きく */
     display: flex;
     justify-content: center; /* 水平方向中央揃え */
     align-items: center; /* 垂直方向中央揃え */
 }
 
 .service-hero-image {
-    width: 100%;
+    width: 800px; /* 固定サイズで大幅に拡大 */
     height: auto;
     border-radius: 12px; /* より大きな角丸 */
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); /* より強いシャドウ */
