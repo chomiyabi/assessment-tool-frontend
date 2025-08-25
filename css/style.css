@@ -1823,17 +1823,24 @@ h3 {
 .service-content-wrapper {
     display: flex;
     align-items: flex-start;
-    gap: 40px;
+    gap: 60px; /* ギャップを拡大 */
     margin-top: 20px;
+    max-width: 1400px; /* より大きなコンテナ */
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .service-text-column {
-    flex: 1;
+    flex: 2; /* テキストエリアを2倍の比率に */
     min-width: 0; /* Flexbox shrinking対策 */
+    max-width: 800px; /* 最大幅を設定して横長に */
 }
 
 .service-image-column {
-    flex: 0 0 700px; /* さらに大きな固定幅（700px） */
+    flex: 1; /* 画像エリアは1の比率（相対的に小さく） */
+    max-width: 500px; /* 最大幅を制限 */
+    display: flex;
+    justify-content: center; /* 水平方向中央揃え */
 }
 
 .service-hero-image {
@@ -1865,12 +1872,20 @@ h3 {
     .service-content-wrapper {
         flex-direction: column;
         gap: 30px; /* より大きなギャップ */
+        max-width: 100%; /* モバイルでは全幅 */
+    }
+    
+    .service-text-column {
+        max-width: 100%; /* モバイルでは最大幅制限を解除 */
     }
     
     .service-image-column {
         flex: none;
         width: 100%;
         order: -1; /* 画像を上部に配置 */
+        display: flex;
+        justify-content: center; /* モバイルでも中央揃え */
+        max-width: 100%;
     }
     
     .service-hero-image {
