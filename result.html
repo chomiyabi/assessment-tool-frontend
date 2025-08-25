@@ -108,23 +108,11 @@
             answers: {}
         };
         
-        // カテゴリマッピング（スプレッドシートのカテゴリに対応）
+        // カテゴリマッピング（本番環境：12問構成）
         const categoryMapping = {
-            // スプレッドシートの英語カテゴリ
             'Knowledge': { key: 'knowledge', color: '#4A90E2' },
             'Skill': { key: 'skill', color: '#EC892E' },
-            'Idea': { key: 'idea', color: '#27AE60' },
-            'Management': { key: 'management', color: '#8E44AD' },
-            'HR': { key: 'hr', color: '#E74C3C' },
-            'Marketing': { key: 'marketing', color: '#9B59B6' },
-            // 日本語カテゴリ（ローカルテスト用）
-            '経営': { key: 'management', color: '#4A90E2' },
-            '人事': { key: 'hr', color: '#EC892E' },
-            'マーケティング': { key: 'marketing', color: '#27AE60' },
-            '営業': { key: 'sales', color: '#8E44AD' },
-            'IT': { key: 'it', color: '#E74C3C' },
-            'Others': { key: 'others', color: '#9B59B6' },
-            'その他': { key: 'others', color: '#9B59B6' }
+            'Idea': { key: 'idea', color: '#27AE60' }
         };
         
         // ページ読み込み時の処理
@@ -136,11 +124,9 @@
             const userData = Common.storage.get('userData');
             
             if (!assessmentAnswers || !userData) {
-                console.warn('診断データが見つかりません。デモ用サンプルデータを使用します。');
-                // デモ用：サンプルデータで処理を継続（本番では削除推奨）
-                const sampleAnswers = { Q001: 2, Q002: 3, Q003: 1, Q004: 2, Q005: 3 };
-                await calculateResults(sampleAnswers);
-                displayResults();
+                console.error('診断データが見つかりません。最初からやり直してください。');
+                alert('診断データが見つかりません。最初からやり直してください。');
+                window.location.href = 'index.html';
                 return;
             }
             
@@ -199,15 +185,12 @@
             }
         });
         
-        // 結果計算
+        // 結果計算（本番環境：12問、各0-3点、最大36点）
         async function calculateResults(answers) {
             try {
                 // APIから正確な質問データを取得
                 const questionData = await API.getQuestions();
                 const questions = questionData.questions;
-                
-                console.log('取得した質問データ:', questions);
-                console.log('最初の質問の詳細:', questions[0]);
                 
                 if (!questions || questions.length === 0) {
                     throw new Error('質問データの取得に失敗しました');
@@ -216,43 +199,29 @@
                 resultData.answers = answers;
                 resultData.categoryScores = {};
                 
-                // カテゴリ別スコア計算（実際のスプレッドシートデータを使用）
+                // カテゴリ別スコア計算（12問、各0-3点）
                 questions.forEach(question => {
                     const answerIndex = answers[question.question_id];
-                    console.log(`処理中: ${question.question_id}, 回答インデックス: ${answerIndex}`);
                     
                     if (answerIndex !== null && answerIndex !== undefined && answerIndex >= 0) {
-                        // スプレッドシートの実際のスコア値を使用
-                        // APIのデータ構造に応じて調整
+                        // 本番環境：0-3点のスコア
                         let score = 0;
-                        
-                        // option_X_scoreフィールドの確認
-                        console.log(`${question.question_id}のスコアフィールド:`, {
-                            option_1_score: question.option_1_score,
-                            option_2_score: question.option_2_score,
-                            option_3_score: question.option_3_score,
-                            option_4_score: question.option_4_score
-                        });
-                        
-                        // スコアフィールドが数値でない場合は変換
                         switch(answerIndex) {
                             case 0:
-                                score = parseInt(question.option_1_score) || 1;
+                                score = parseInt(question.option_1_score) || 0;
                                 break;
                             case 1:
-                                score = parseInt(question.option_2_score) || 2;
+                                score = parseInt(question.option_2_score) || 1;
                                 break;
                             case 2:
-                                score = parseInt(question.option_3_score) || 3;
+                                score = parseInt(question.option_3_score) || 2;
                                 break;
                             case 3:
-                                score = parseInt(question.option_4_score) || 4;
+                                score = parseInt(question.option_4_score) || 3;
                                 break;
                             default:
                                 score = 0;
                         }
-                        
-                        console.log(`${question.question_id}: 選択肢${answerIndex + 1} → スコア${score}`);
                         
                         const category = question.category;
                         
@@ -298,100 +267,23 @@
             }
         }
         
-        // フォールバック用計算関数（API失敗時）
+        // フォールバック用計算関数（API失敗時）- 本番環境では使用禁止
         async function calculateResultsFallback(answers) {
-            console.warn('フォールバック計算を使用します');
+            console.error('API接続に失敗しました。本番環境ではフォールバック計算を使用できません。');
+            alert('システムエラーが発生しました。しばらく時間をおいてから再度お試しください。');
+            window.location.href = 'index.html';
             
-            // サンプル質問データ（スプレッドシートと同じ構造）
-            const sampleQuestions = [
-                {
-                    question_id: 'Q001',
-                    category: '経営',
-                    question_text: '自社の経営戦略に合わせたDX戦略を策定されていますか？ また、戦略は社内に公開、周知され、組織に認知されていますか？',
-                    option_1_score: 1, option_2_score: 2, option_3_score: 3, option_4_score: 4
-                },
-                {
-                    question_id: 'Q002',
-                    category: '経営',
-                    question_text: '将来におけるディスラプションに対する危機感を社内で共有できていますか？',
-                    option_1_score: 1, option_2_score: 2, option_3_score: 3, option_4_score: 4
-                },
-                {
-                    question_id: 'Q003',
-                    category: '経営',
-                    question_text: 'DX推進に対して予算が確保され、ビジネス貢献を評価する仕組みがありますか？',
-                    option_1_score: 1, option_2_score: 2, option_3_score: 3, option_4_score: 4
-                },
-                {
-                    question_id: 'Q004',
-                    category: '人事',
-                    question_text: 'デジタル人材の採用・育成に取り組んでいますか？',
-                    option_1_score: 1, option_2_score: 2, option_3_score: 3, option_4_score: 4
-                },
-                {
-                    question_id: 'Q005',
-                    category: 'マーケティング',
-                    question_text: '顧客データを活用したマーケティング施策を実施していますか？',
-                    option_1_score: 1, option_2_score: 2, option_3_score: 3, option_4_score: 4
-                }
-            ];
-            
+            // 本番環境では以下のローカル計算は使用しない
+            /*
+            console.warn('フォールバック計算を使用します（開発環境のみ）');
             resultData.answers = answers;
-            resultData.categoryScores = {};
-            
-            // カテゴリ別スコア計算
-            sampleQuestions.forEach(question => {
-                const answerIndex = answers[question.question_id];
-                if (answerIndex !== null && answerIndex !== undefined && answerIndex >= 0) {
-                    let score = 0;
-                    switch(answerIndex) {
-                        case 0:
-                            score = question.option_1_score;
-                            break;
-                        case 1:
-                            score = question.option_2_score;
-                            break;
-                        case 2:
-                            score = question.option_3_score;
-                            break;
-                        case 3:
-                            score = question.option_4_score;
-                            break;
-                        default:
-                            score = 0;
-                    }
-                    
-                    const category = question.category;
-                    
-                    if (!resultData.categoryScores[category]) {
-                        resultData.categoryScores[category] = {
-                            total: 0,
-                            count: 0,
-                            questions: []
-                        };
-                    }
-                    
-                    resultData.categoryScores[category].total += score;
-                    resultData.categoryScores[category].count += 1;
-                    resultData.categoryScores[category].questions.push({
-                        questionId: question.question_id,
-                        score: score
-                    });
-                }
-            });
-            
-            // 各カテゴリの平均スコア計算
-            Object.keys(resultData.categoryScores).forEach(category => {
-                const data = resultData.categoryScores[category];
-                data.average = data.total / data.count;
-            });
-            
-            // 総合スコア計算（全スコアの合計）
-            let totalScore = 0;
-            Object.values(resultData.categoryScores).forEach(categoryData => {
-                totalScore += categoryData.total;
-            });
-            resultData.totalScore = totalScore;
+            resultData.categoryScores = {
+                'Knowledge': { total: 0, count: 4, average: 0, questions: [] },
+                'Skill': { total: 0, count: 4, average: 0, questions: [] },
+                'Idea': { total: 0, count: 4, average: 0, questions: [] }
+            };
+            resultData.totalScore = 0;
+            */
         }
         
         // 結果表示
@@ -483,18 +375,12 @@
         }
         */
         
-        // レベル判定ロジック（スプレッドシートのスコア値に基づく）
+        // レベル判定ロジック（P-05スペック準拠：12問、最大36点）
         function determineMaturityLevel(totalScore) {
-            // 実際のスコア範囲に基づいたレベル判定
-            // APIから取得した質問数に応じて動的に判定
-            // デフォルト：9問×最大4点 = 最大36点を想定
-            const maxPossibleScore = 36; // 実際の質問数に応じて調整
-            const scorePercentage = (totalScore / maxPossibleScore) * 100;
-            
-            // パーセンテージベースでレベル判定
-            if (scorePercentage <= 25) return { level: 1, name: '業務改善 黎明期' };
-            if (scorePercentage <= 50) return { level: 2, name: '業務改善 試行期' };
-            if (scorePercentage <= 75) return { level: 3, name: '業務改善 展開期' };
+            // P-05_DEVELOPMENT_SPEC.md 3.2.3 レベル判定基準
+            if (totalScore <= 11) return { level: 1, name: '業務改善 黎明期' };
+            if (totalScore <= 23) return { level: 2, name: '業務改善 試行期' };
+            if (totalScore <= 32) return { level: 3, name: '業務改善 展開期' };
             return { level: 4, name: '業務改善 先進期' };
         }
         
@@ -526,16 +412,16 @@
             return `貴社のAI活用スコアは「${totalScore}」、業務改善ポテンシャルは「${levelName}」となります。`;
         }
         
-        // テスト関数（パーセンテージベースのレベル判定用）
+        // テスト関数（P-05スペック準拠：12問、最大36点）
         function testLevelLogic() {
             console.log('=== レベル判定テスト開始 ===');
             
-            // 各レベルのテストケース（36点満点想定）
+            // 各レベルのテストケース（P-05スペック準拠）
             const testCases = [
-                { score: 9, expected: 'レベル1 (25%)' },
-                { score: 18, expected: 'レベル2 (50%)' }, 
-                { score: 27, expected: 'レベル3 (75%)' },
-                { score: 36, expected: 'レベル4 (100%)' }
+                { score: 5, expected: 'レベル1（0-11点）' },
+                { score: 15, expected: 'レベル2（12-23点）' },
+                { score: 28, expected: 'レベル3（24-32点）' },
+                { score: 35, expected: 'レベル4（33-36点）' }
             ];
             
             testCases.forEach(testCase => {
@@ -552,16 +438,16 @@
             console.log('=== レベル判定テスト完了 ===');
         }
         
-        // Step 9: 統合テスト用関数（パーセンテージベース）
+        // Step 9: 統合テスト用関数（P-05スペック準拠）
         function runIntegrationTests() {
             console.log('🧪 === 統合テスト開始 ===');
             
-            // Test Case 1-4: 各レベルでの表示テスト（36点満点想定）
+            // Test Case 1-4: 各レベルでの表示テスト（P-05スペック準拠）
             const testCases = [
-                { level: 1, score: 9, name: 'レベル1（業務改善 黎明期）' },
-                { level: 2, score: 18, name: 'レベル2（業務改善 試行期）' },
-                { level: 3, score: 27, name: 'レベル3（業務改善 展開期）' },
-                { level: 4, score: 36, name: 'レベル4（業務改善 先進期）' }
+                { level: 1, score: 5, name: 'レベル1（業務改善 黎明期）' },
+                { level: 2, score: 15, name: 'レベル2（業務改善 試行期）' },
+                { level: 3, score: 28, name: 'レベル3（業務改善 展開期）' },
+                { level: 4, score: 35, name: 'レベル4（業務改善 先進期）' }
             ];
             
             testCases.forEach((testCase, index) => {
@@ -616,9 +502,9 @@
         function testErrorCases() {
             console.log('❌ === エラーケーステスト開始 ===');
             
-            // 無効なスコアでのテスト（36点満点想定）
+            // 境界値テスト（P-05スペック準拠）
             console.log('🔍 境界値テスト');
-            [-1, 0, 9, 10, 18, 19, 27, 28, 36, 40].forEach(score => {
+            [-1, 0, 11, 12, 23, 24, 32, 33, 36, 40].forEach(score => {
                 const levelInfo = determineMaturityLevel(score);
                 console.log(`スコア${score}: レベル${levelInfo.level} - ${levelInfo.name}`);
             });
@@ -775,61 +661,22 @@
             Common.ui.showAlert('診断結果をダウンロードしました', 'success');
         }
         
-        // スコア計算のデバッグ関数
+        // スコア計算のデバッグ関数（開発用のみ）
         async function debugScoreCalculation(testAnswers) {
-            console.log('🔍 === スコア計算デバッグ開始 ===');
-            console.log('テスト用回答データ:', testAnswers);
+            console.log('🔍 === スコア計算デバッグ開始（開発用） ===');
             
             try {
-                // APIから質問データを取得してテスト
-                console.log('1. API経由でのスコア計算テスト:');
                 await calculateResults(testAnswers);
+                console.log('総合スコア:', resultData.totalScore);
+                console.log('カテゴリスコア:', resultData.categoryScores);
                 
-                console.log('計算結果:');
-                console.log('- 総合スコア:', resultData.totalScore);
-                console.log('- カテゴリスコア:', resultData.categoryScores);
-                
-                // 各質問の詳細なスコア計算を確認
-                const questionData = await API.getQuestions();
-                const questions = questionData.questions;
-                
-                let totalScoreCheck = 0;
-                console.log('\n2. 各質問のスコア詳細:');
-                questions.forEach(question => {
-                    const answerIndex = testAnswers[question.question_id];
-                    if (answerIndex !== null && answerIndex !== undefined && answerIndex >= 0) {
-                        let score = 0;
-                        switch(answerIndex) {
-                            case 0: score = question.option_1_score || 0; break;
-                            case 1: score = question.option_2_score || 0; break;
-                            case 2: score = question.option_3_score || 0; break;
-                            case 3: score = question.option_4_score || 0; break;
-                        }
-                        totalScoreCheck += score;
-                        console.log(`- ${question.question_id}: 回答${answerIndex + 1} → ${score}点`);
-                    }
-                });
-                
-                console.log('\n3. 検算結果:');
-                console.log('- 手動計算合計:', totalScoreCheck);
-                console.log('- システム計算:', resultData.totalScore);
-                console.log('- 一致:', totalScoreCheck === resultData.totalScore ? '✅' : '❌');
-                
-                // レベル判定確認
                 const levelInfo = determineMaturityLevel(resultData.totalScore);
-                console.log('\n4. レベル判定:');
-                console.log(`- スコア ${resultData.totalScore} → ${levelInfo.name}`);
+                console.log(`レベル判定: ${resultData.totalScore}点 → ${levelInfo.name}`);
                 
                 displayResults();
-                
             } catch (error) {
-                console.error('デバッグ計算エラー:', error);
-                console.log('フォールバック計算でテスト:');
-                await calculateResultsFallback(testAnswers);
-                displayResults();
+                console.error('デバッグエラー:', error);
             }
-            
-            console.log('🔍 === スコア計算デバッグ完了 ===');
         }
         
         // 診断をやり直す（Step 7改良版）

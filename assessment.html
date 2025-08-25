@@ -75,104 +75,13 @@
             answers: {}
         };
         
-        // 質問データ（スプレッドシートQuestionsシートの実際のデータ）
-        let questionsData = [
-            {
-                question_id: 'Q001',
-                category: '経営',
-                question_text: '自社の経営戦略に合わせたDX戦略を策定されていますか？ また、戦略は社内に公開、周知され、組織に認知されていますか？',
-                option_1: '策定していない。または周知されていない',
-                option_2: '公開、周知されているが、一部の組織しか認知していない',
-                option_3: '全組織に認知されており、一部の組織で取り組みが始めている',
-                option_4: '全社員に認知されており、部門横断で取り組んでいる',
-                option_1_score: 1,
-                option_2_score: 2,
-                option_3_score: 3,
-                option_4_score: 4,
-                options: [
-                    { text: '策定していない。または周知されていない', score: 1 },
-                    { text: '公開、周知されているが、一部の組織しか認知していない', score: 2 },
-                    { text: '全組織に認知されており、一部の組織で取り組みが始めている', score: 3 },
-                    { text: '全社員に認知されており、部門横断で取り組んでいる', score: 4 }
-                ]
-            },
-            {
-                question_id: 'Q002',
-                category: '経営',
-                question_text: '将来におけるディスラプションに対する危機感を社内で共有できていますか？',
-                option_1: '危機感がない。または共有できていない',
-                option_2: '漠然として危機感を共有している',
-                option_3: '具体的な危機について役員間で話し合っている',
-                option_4: 'ディスラプションに対する影響を評価した上で、役員・社員と共有している',
-                option_1_score: 1,
-                option_2_score: 2,
-                option_3_score: 3,
-                option_4_score: 4,
-                options: [
-                    { text: '危機感がない。または共有できていない', score: 1 },
-                    { text: '漠然として危機感を共有している', score: 2 },
-                    { text: '具体的な危機について役員間で話し合っている', score: 3 },
-                    { text: 'ディスラプションに対する影響を評価した上で、役員・社員と共有している', score: 4 }
-                ]
-            },
-            {
-                question_id: 'Q003',
-                category: '経営',
-                question_text: 'DX推進に対して予算が確保され、ビジネス貢献を評価する仕組みがありますか？',
-                option_1: '予算がない。または不十分で評価の仕組みもない',
-                option_2: '予算化及び仕組みが明確化され、一部の部門で実践されている',
-                option_3: '予算化及び仕組みが明確化され、全社的に実践されている',
-                option_4: '予算化及び仕組みが明確化され、全社的に継続的に改善しながら定着している',
-                option_1_score: 1,
-                option_2_score: 2,
-                option_3_score: 3,
-                option_4_score: 4,
-                options: [
-                    { text: '予算がない。または不十分で評価の仕組みもない', score: 1 },
-                    { text: '予算化及び仕組みが明確化され、一部の部門で実践されている', score: 2 },
-                    { text: '予算化及び仕組みが明確化され、全社的に実践されている', score: 3 },
-                    { text: '予算化及び仕組みが明確化され、全社的に継続的に改善しながら定着している', score: 4 }
-                ]
-            },
-            {
-                question_id: 'Q004',
-                category: '人事',
-                question_text: 'デジタル人材の採用・育成に取り組んでいますか？',
-                option_1: '取り組んでいない',
-                option_2: '一部で取り組みを開始している',
-                option_3: '計画的に採用・育成を進めている',
-                option_4: '継続的な採用・育成体制が確立されている',
-                option_1_score: 1,
-                option_2_score: 2,
-                option_3_score: 3,
-                option_4_score: 4,
-                options: [
-                    { text: '取り組んでいない', score: 1 },
-                    { text: '一部で取り組みを開始している', score: 2 },
-                    { text: '計画的に採用・育成を進めている', score: 3 },
-                    { text: '継続的な採用・育成体制が確立されている', score: 4 }
-                ]
-            },
-            {
-                question_id: 'Q005',
-                category: 'マーケティング',
-                question_text: '顧客データを活用したマーケティング施策を実施していますか？',
-                option_1: '実施していない',
-                option_2: '一部のデータを活用している',
-                option_3: '複数のデータソースを統合して活用している',
-                option_4: 'AIを活用した高度な分析・予測を行っている',
-                option_1_score: 1,
-                option_2_score: 2,
-                option_3_score: 3,
-                option_4_score: 4,
-                options: [
-                    { text: '実施していない', score: 1 },
-                    { text: '一部のデータを活用している', score: 2 },
-                    { text: '複数のデータソースを統合して活用している', score: 3 },
-                    { text: 'AIを活用した高度な分析・予測を行っている', score: 4 }
-                ]
-            }
-        ];
+        // 質問データ（本番環境：APIから12問を取得）
+        let questionsData = [];
+        
+        /*
+        // ローカルテスト用データ（本番環境では使用しない）
+        // 本番環境では12問すべてAPIから動的に取得する
+        */
         
         
         // ページ読み込み時の処理
@@ -206,9 +115,10 @@
                 LoadingHelper.hide();
                 console.error('質問データ取得エラー:', error);
                 
-                // APIエラー時はサンプルデータを使用
-                console.log('サンプルデータを使用します');
-                initializeAssessment();
+                // 本番環境：APIエラー時は診断を継続できない
+                alert('システムエラーが発生しました。しばらく時間をおいてから再度お試しください。');
+                Common.navigation.goToPage('index.html');
+                return;
             }
         });
         
@@ -224,8 +134,8 @@
                 categoryMap[category].push(question);
             });
             
-            // カテゴリ順序を動的に設定（優先順序を定義、その他は自動追加）
-            const preferredOrder = ['経営', '人事', 'マーケティング'];
+            // カテゴリ順序を動的に設定（本番環境：Knowledge, Skill, Idea）
+            const preferredOrder = ['Knowledge', 'Skill', 'Idea'];
             const allCategories = Object.keys(categoryMap);
             
             // 優先順序のカテゴリを先に追加
