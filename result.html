@@ -108,8 +108,16 @@
             answers: {}
         };
         
-        // カテゴリマッピング
+        // カテゴリマッピング（スプレッドシートのカテゴリに対応）
         const categoryMapping = {
+            // スプレッドシートの英語カテゴリ
+            'Knowledge': { key: 'knowledge', color: '#4A90E2' },
+            'Skill': { key: 'skill', color: '#EC892E' },
+            'Idea': { key: 'idea', color: '#27AE60' },
+            'Management': { key: 'management', color: '#8E44AD' },
+            'HR': { key: 'hr', color: '#E74C3C' },
+            'Marketing': { key: 'marketing', color: '#9B59B6' },
+            // 日本語カテゴリ（ローカルテスト用）
             '経営': { key: 'management', color: '#4A90E2' },
             '人事': { key: 'hr', color: '#EC892E' },
             'マーケティング': { key: 'marketing', color: '#27AE60' },
@@ -198,6 +206,9 @@
                 const questionData = await API.getQuestions();
                 const questions = questionData.questions;
                 
+                console.log('取得した質問データ:', questions);
+                console.log('最初の質問の詳細:', questions[0]);
+                
                 if (!questions || questions.length === 0) {
                     throw new Error('質問データの取得に失敗しました');
                 }
@@ -208,25 +219,40 @@
                 // カテゴリ別スコア計算（実際のスプレッドシートデータを使用）
                 questions.forEach(question => {
                     const answerIndex = answers[question.question_id];
+                    console.log(`処理中: ${question.question_id}, 回答インデックス: ${answerIndex}`);
+                    
                     if (answerIndex !== null && answerIndex !== undefined && answerIndex >= 0) {
                         // スプレッドシートの実際のスコア値を使用
+                        // APIのデータ構造に応じて調整
                         let score = 0;
+                        
+                        // option_X_scoreフィールドの確認
+                        console.log(`${question.question_id}のスコアフィールド:`, {
+                            option_1_score: question.option_1_score,
+                            option_2_score: question.option_2_score,
+                            option_3_score: question.option_3_score,
+                            option_4_score: question.option_4_score
+                        });
+                        
+                        // スコアフィールドが数値でない場合は変換
                         switch(answerIndex) {
                             case 0:
-                                score = question.option_1_score || 0;
+                                score = parseInt(question.option_1_score) || 1;
                                 break;
                             case 1:
-                                score = question.option_2_score || 0;
+                                score = parseInt(question.option_2_score) || 2;
                                 break;
                             case 2:
-                                score = question.option_3_score || 0;
+                                score = parseInt(question.option_3_score) || 3;
                                 break;
                             case 3:
-                                score = question.option_4_score || 0;
+                                score = parseInt(question.option_4_score) || 4;
                                 break;
                             default:
                                 score = 0;
                         }
+                        
+                        console.log(`${question.question_id}: 選択肢${answerIndex + 1} → スコア${score}`);
                         
                         const category = question.category;
                         
@@ -460,10 +486,15 @@
         // レベル判定ロジック（スプレッドシートのスコア値に基づく）
         function determineMaturityLevel(totalScore) {
             // 実際のスコア範囲に基づいたレベル判定
-            // 5問×最大4点 = 最大20点を想定（スプレッドシートの実際の値による）
-            if (totalScore <= 8) return { level: 1, name: '業務改善 黎明期' };
-            if (totalScore <= 13) return { level: 2, name: '業務改善 試行期' };
-            if (totalScore <= 17) return { level: 3, name: '業務改善 展開期' };
+            // APIから取得した質問数に応じて動的に判定
+            // デフォルト：9問×最大4点 = 最大36点を想定
+            const maxPossibleScore = 36; // 実際の質問数に応じて調整
+            const scorePercentage = (totalScore / maxPossibleScore) * 100;
+            
+            // パーセンテージベースでレベル判定
+            if (scorePercentage <= 25) return { level: 1, name: '業務改善 黎明期' };
+            if (scorePercentage <= 50) return { level: 2, name: '業務改善 試行期' };
+            if (scorePercentage <= 75) return { level: 3, name: '業務改善 展開期' };
             return { level: 4, name: '業務改善 先進期' };
         }
         
@@ -495,16 +526,16 @@
             return `貴社のAI活用スコアは「${totalScore}」、業務改善ポテンシャルは「${levelName}」となります。`;
         }
         
-        // テスト関数（更新されたスコア範囲用）
+        // テスト関数（パーセンテージベースのレベル判定用）
         function testLevelLogic() {
             console.log('=== レベル判定テスト開始 ===');
             
-            // 各レベルのテストケース（更新されたスコア範囲）
+            // 各レベルのテストケース（36点満点想定）
             const testCases = [
-                { score: 5, expected: 'レベル1' },
-                { score: 10, expected: 'レベル2' }, 
-                { score: 15, expected: 'レベル3' },
-                { score: 18, expected: 'レベル4' }
+                { score: 9, expected: 'レベル1 (25%)' },
+                { score: 18, expected: 'レベル2 (50%)' }, 
+                { score: 27, expected: 'レベル3 (75%)' },
+                { score: 36, expected: 'レベル4 (100%)' }
             ];
             
             testCases.forEach(testCase => {
@@ -521,16 +552,16 @@
             console.log('=== レベル判定テスト完了 ===');
         }
         
-        // Step 9: 統合テスト用関数（更新されたスコア範囲）
+        // Step 9: 統合テスト用関数（パーセンテージベース）
         function runIntegrationTests() {
             console.log('🧪 === 統合テスト開始 ===');
             
-            // Test Case 1-4: 各レベルでの表示テスト（更新されたスコア範囲）
+            // Test Case 1-4: 各レベルでの表示テスト（36点満点想定）
             const testCases = [
-                { level: 1, score: 5, name: 'レベル1（業務改善 黎明期）' },
-                { level: 2, score: 10, name: 'レベル2（業務改善 試行期）' },
-                { level: 3, score: 15, name: 'レベル3（業務改善 展開期）' },
-                { level: 4, score: 18, name: 'レベル4（業務改善 先進期）' }
+                { level: 1, score: 9, name: 'レベル1（業務改善 黎明期）' },
+                { level: 2, score: 18, name: 'レベル2（業務改善 試行期）' },
+                { level: 3, score: 27, name: 'レベル3（業務改善 展開期）' },
+                { level: 4, score: 36, name: 'レベル4（業務改善 先進期）' }
             ];
             
             testCases.forEach((testCase, index) => {
@@ -585,9 +616,9 @@
         function testErrorCases() {
             console.log('❌ === エラーケーステスト開始 ===');
             
-            // 無効なスコアでのテスト（更新されたスコア範囲）
+            // 無効なスコアでのテスト（36点満点想定）
             console.log('🔍 境界値テスト');
-            [-1, 0, 8, 9, 13, 14, 17, 18, 20, 25].forEach(score => {
+            [-1, 0, 9, 10, 18, 19, 27, 28, 36, 40].forEach(score => {
                 const levelInfo = determineMaturityLevel(score);
                 console.log(`スコア${score}: レベル${levelInfo.level} - ${levelInfo.name}`);
             });
