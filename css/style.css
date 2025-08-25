@@ -1761,7 +1761,7 @@ h3 {
 }
 
 .service-container {
-    max-width: var(--max-width);
+    max-width: 2200px; /* セクション全体を大幅に拡大 */
     margin: 0 auto;
     padding: 0 var(--content-padding);
 }
@@ -1831,9 +1831,9 @@ h3 {
 }
 
 .service-text-column {
-    flex: 1; /* テキストエリアの比率を1に変更 */
-    min-width: 0; /* Flexbox shrinking対策 */
-    max-width: 800px; /* 最大幅を設定して横長に */
+    flex: 2.5; /* テキストエリアをより大きな比率に（1→2.5倍） */
+    min-width: 800px; /* 最小幅を大幅に拡大して横長を強制 */
+    max-width: 1200px; /* 最大幅をさらに拡大 */
 }
 
 .service-image-column {
