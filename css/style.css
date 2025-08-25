@@ -1761,9 +1761,9 @@ h3 {
 }
 
 .service-container {
-    max-width: 2200px; /* セクション全体を大幅に拡大 */
+    max-width: 1800px; /* 最大幅を少し狭めて左右の余白を確保（2200px→1800px） */
     margin: 0 auto;
-    padding: 0 var(--content-padding);
+    padding: 0 80px; /* 左右のパディングを大幅に増加（var(--content-padding)→80px） */
 }
 
 .service-introduction .service-title {
@@ -1823,9 +1823,9 @@ h3 {
 .service-content-wrapper {
     display: flex;
     align-items: center; /* 垂直方向中央揃え（flex-start → center） */
-    gap: 120px; /* ギャップを大幅に拡大して重なりを防止（80px→120px） */
+    gap: 100px; /* ギャップを少し狭める（120px→100px） */
     margin-top: 20px;
-    max-width: 2000px; /* コンテナをさらに拡大（1600px→2000px） */
+    max-width: 1600px; /* コンテナを調整（2000px→1600px） */
     margin-left: auto;
     margin-right: auto;
 }
