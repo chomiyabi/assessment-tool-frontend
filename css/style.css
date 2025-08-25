@@ -1747,19 +1747,31 @@ h3 {
 /* ===== Haru Automationサービス紹介エリア (Step 6) ===== */
 .service-introduction {
     background: rgba(183, 199, 255, 0.2);
-    padding: 40px;
-    border-radius: var(--border-radius-medium);
+    padding: 60px 0; /* 上下パディングのみ、左右は0で全幅表示 */
     margin: 40px 0;
-    border: 1px solid rgba(183, 199, 255, 0.3);
+    border-top: 1px solid rgba(183, 199, 255, 0.3);
+    border-bottom: 1px solid rgba(183, 199, 255, 0.3);
     box-shadow: var(--shadow-light);
+    width: 100vw; /* 画面全幅 */
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+}
+
+.service-container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--content-padding);
 }
 
 .service-title {
-    font-size: var(--font-size-h1);
+    font-size: calc(var(--font-size-h1) + 8px); /* より大きなフォントサイズ（42px） */
     color: var(--color-header);
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     text-align: center;
-    font-weight: var(--font-weight-semibold);
+    font-weight: var(--font-weight-bold);
 }
 
 .service-description {
@@ -1767,6 +1779,13 @@ h3 {
     line-height: 1.8;
     margin-bottom: 30px;
     color: var(--color-text);
+}
+
+.service-hero-text {
+    font-size: calc(var(--font-size-body) + 6px); /* より大きなフォントサイズ（24px） */
+    line-height: 1.6;
+    margin-bottom: 20px !important;
+    color: var(--color-header);
 }
 
 .service-description p {
@@ -1814,14 +1833,14 @@ h3 {
 }
 
 .service-image-column {
-    flex: 0 0 400px; /* 400px固定幅 */
+    flex: 0 0 500px; /* より大きな固定幅（500px） */
 }
 
 .service-hero-image {
     width: 100%;
     height: auto;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 12px; /* より大きな角丸 */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); /* より強いシャドウ */
     transition: transform 0.3s ease;
     object-fit: cover;
     background-color: #f8f9fa; /* 読み込み中の背景色 */
@@ -1834,14 +1853,18 @@ h3 {
 /* レスポンシブ対応 */
 @media (max-width: 767px) {
     .service-introduction {
-        padding: 20px;
+        padding: 40px 0; /* モバイルでも上下のパディングを維持 */
         margin: 20px 0;
+    }
+    
+    .service-container {
+        padding: 0 20px; /* モバイルでの横パディング */
     }
     
     /* 2カラムレイアウトのモバイル対応 */
     .service-content-wrapper {
         flex-direction: column;
-        gap: 20px;
+        gap: 30px; /* より大きなギャップ */
     }
     
     .service-image-column {
@@ -1853,6 +1876,7 @@ h3 {
     .service-hero-image {
         max-width: 100%;
         height: auto;
+        border-radius: 8px; /* モバイルでの角丸 */
     }
     
     .service-cta-buttons {
@@ -1866,14 +1890,18 @@ h3 {
     }
     
     .service-title {
-        font-size: var(--font-size-h2);
+        font-size: calc(var(--font-size-h2) + 4px); /* モバイルでも大きめ（30px） */
+    }
+    
+    .service-hero-text {
+        font-size: calc(var(--font-size-body) + 2px); /* モバイルでの調整（20px） */
     }
 }
 
 /* より小さなモバイルデバイス対応 */
 @media (max-width: 480px) {
     .service-content-wrapper {
-        gap: 15px;
+        gap: 20px;
     }
     
     .service-hero-image {
@@ -1881,8 +1909,20 @@ h3 {
     }
     
     .service-introduction {
-        padding: 15px;
+        padding: 30px 0; /* 小さなモバイルでも適度なパディング維持 */
         margin: 15px 0;
+    }
+    
+    .service-container {
+        padding: 0 15px; /* より小さな横パディング */
+    }
+    
+    .service-title {
+        font-size: var(--font-size-h2); /* 小さなモバイルでの調整 */
+    }
+    
+    .service-hero-text {
+        font-size: var(--font-size-body); /* 小さなモバイルでの調整 */
     }
 }
 
