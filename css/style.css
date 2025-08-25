@@ -1182,7 +1182,7 @@ h3 {
 .result-content {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 40px 20px;
+    padding: 20px 20px 40px 20px; /* 上部パディングを減らして空白を削減 */
 }
 
 .result-summary {
@@ -1664,7 +1664,7 @@ h3 {
 /* レスポンシブ対応 - 結果ページ */
 @media (max-width: 768px) {
     .result-content {
-        padding: 20px 10px;
+        padding: 15px 10px 20px 10px; /* モバイルでも上部パディングを削減 */
     }
     
     .result-title {
