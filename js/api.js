@@ -22,12 +22,10 @@ const API_CONFIG = {
     RETRY_DELAY: 1000
 };
 
-// BASE_URLを動的に設定
-// ローカル開発時はCORSプロキシを使用（オプション）
-const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+// 本番環境のGAS URL
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbwooCJeciyJfmWZ9BhN8gzsXsp6kYmd70R7_X8ghBj3tFMOKkn4cccG3ai_vjrz_ng1gw/exec';
 
-// 元の設定：本番環境でも直接GAS URLを使用
+// 本番環境設定
 API_CONFIG.BASE_URL = GAS_URL;
 
 /**
@@ -70,15 +68,9 @@ class AssessmentAPI {
             try {
                 const fetchOptions = { 
                     method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
+                    mode: 'cors',
+                    headers: {}
                 };
-                
-                // 本番環境では Origin ヘッダーを明示的に設定
-                if (API_CONFIG.IS_PRODUCTION) {
-                    fetchOptions.headers['Origin'] = 'https://haru-assessment.com';
-                }
                 
                 const response = await this.fetchWithTimeout(url, fetchOptions);
                 
@@ -291,37 +283,6 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = API;
 }
 
-/**
- * API接続テスト関数
- * コンソールから実行可能
- */
-async function testAPIConnection() {
-    console.log('=== API接続テスト開始 ===');
-    
-    try {
-        // 1. ヘルスチェック
-        console.log('1. ヘルスチェック...');
-        const health = await API.healthCheck();
-        console.log('✅ ヘルスチェック成功:', health);
-        
-        // 2. 設定取得
-        console.log('\n2. 設定取得...');
-        const config = await API.getConfig();
-        console.log('✅ 設定取得成功:', config);
-        
-        // 3. 質問取得
-        console.log('\n3. 質問データ取得...');
-        const questions = await API.getQuestions();
-        console.log('✅ 質問取得成功: 質問数 =', questions.questions ? questions.questions.length : 0);
-        
-        console.log('\n=== すべてのテストが成功しました ===');
-        return true;
-        
-    } catch (error) {
-        console.error('❌ テスト失敗:', error);
-        return false;
-    }
-}
 
 /**
  * ローディング表示ヘルパー
