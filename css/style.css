@@ -1823,9 +1823,9 @@ h3 {
 .service-content-wrapper {
     display: flex;
     align-items: center; /* 垂直方向中央揃え（flex-start → center） */
-    gap: 60px; /* ギャップを拡大 */
+    gap: 80px; /* ギャップをさらに拡大 */
     margin-top: 20px;
-    max-width: 1400px; /* より大きなコンテナ */
+    max-width: 1600px; /* コンテナをさらに拡大 */
     margin-left: auto;
     margin-right: auto;
 }
@@ -1838,7 +1838,7 @@ h3 {
 
 .service-image-column {
     flex: 1; /* 画像エリアは1の比率 */
-    max-width: 700px; /* 最大幅を拡大（500px→700px） */
+    max-width: 900px; /* 最大幅を大幅拡大（700px→900px） */
     display: flex;
     justify-content: center; /* 水平方向中央揃え */
     align-items: center; /* 垂直方向中央揃え */
